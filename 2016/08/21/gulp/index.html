@@ -86,7 +86,7 @@ gulp.task(&apos;ref&apos;,function()&amp;#123;    gulp.src(&apos;unittest/mocha/
 整个构建过程是输入-&amp;gt;输出，要么就是拆分完整的输入到输出流程,互相重叠不大的task，要么是一次性完整输入，然后筛选做不同处理，然后一次性完整输出
 单文件处理打包以html页面为单位，打包资源，并添加md5
 gulp.task(&apos;ref&apos;,function()&amp;#123;    gulp.src(&apos;unittest/mocha/in">
-<meta property="og:updated_time" content="2017-02-21T08:03:15.000Z">
+<meta property="og:updated_time" content="2017-03-04T08:01:18.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="gulp搭建构建系统">
 <meta name="twitter:description" content="前端的3大缺陷能力
@@ -363,6 +363,22 @@ gulp.task(&apos;ref&apos;,function()&amp;#123;    gulp.src(&apos;unittest/mocha/
 <figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"></div><div class="line">gulp.task(<span class="string">'ref'</span>,<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    gulp.src(<span class="string">'unittest/mocha/index.html'</span>)</div><div class="line">        .pipe(useref())</div><div class="line">        .pipe(gulpif(<span class="string">'*.js'</span>, rev()))</div><div class="line">        .pipe(revReplace())</div><div class="line">        .pipe(gulp.dest(distPath))</div><div class="line">        .pipe(rev.manifest())</div><div class="line">        .pipe(gulp.dest(revPath));</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
 <p>将打包后的文件变成单文件，然后做单文件处理</p>
 <p>被打包的文件应该自行做单文件处理，和资源定位</p>
+<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><ol>
+<li>gulp的任务是异步执行的不能保证顺序，使用gulp-sequence同步执行任务</li>
+</ol>
+<ul>
+<li><p>dest不能重命名，使用gulp-rename解决</p>
+</li>
+<li><p>最好分成开发配置，上线配置2分，互不干扰</p>
+</li>
+<li><p>插件太多，每个都要require很麻烦，使用gulp-load-plugins解决，$.pluginName , 驼峰命名</p>
+</li>
+</ul>
+<ol>
+<li>API</li>
+</ol>
+<p>gulp.src</p>
+<p>gulp.dest</p>
 
       
     </div>
@@ -473,7 +489,7 @@ gulp.task(&apos;ref&apos;,function()&amp;#123;    gulp.src(&apos;unittest/mocha/
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">46</span>
+              <span class="site-state-item-count">54</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>
@@ -512,7 +528,7 @@ gulp.task(&apos;ref&apos;,function()&amp;#123;    gulp.src(&apos;unittest/mocha/
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#单文件处理"><span class="nav-number">1.</span> <span class="nav-text">单文件处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#打包"><span class="nav-number">2.</span> <span class="nav-text">打包</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#单文件处理"><span class="nav-number">1.</span> <span class="nav-text">单文件处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#打包"><span class="nav-number">2.</span> <span class="nav-text">打包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意事项"><span class="nav-number">3.</span> <span class="nav-text">注意事项</span></a></li></ol></div>
             
           </div>
         </section>

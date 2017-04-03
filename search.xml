@@ -4,11 +4,135 @@
   
     
     <entry>
+      <title><![CDATA[坑-动态插入script不执行]]></title>
+      <url>http://http://localhost:4000/2017/03/21/dynamic-insert-script-not-excute/</url>
+      <content type="html"><![CDATA[<p>innerHTML 只能插入dom，插入script标签不会执行，用标准dom创建scrip标签可以执行</p>
+]]></content>
+      
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[动态打包]]></title>
+      <url>http://http://localhost:4000/2017/03/21/dynamic-pack/</url>
+      <content type="html"><![CDATA[<p>打包配置是动态生成的，<br>同时内容是根据配置生成的，<br>希望能够内联，<br>希望能分别对资源做prase</p>
+<p>所有的编译工具都是静态编译，在编译前，代码都是确定的。输入都是文件，支持动态确定输入的就只有fis 的inline了，可以先让模板引擎编译，然后确定inline, webpack也有require，但是它的入口必须js，同事打包出来的也是js，而我们需要的是一个html</p>
+<p>涉及到编译组件的模块化，同时还有js的模块化</p>
+<p>后端模板也带了模块化打包的能力，但是没有对特定资源做预处理的能力</p>
+<p>编译工具可以对特定资源做处理，但是当先经过了后端模板，就变成了一个整体，就不好单独对资源做处理了。</p>
+<p>同时要有能分析依赖的能力</p>
+<hr>
+<p>后端模板先编译，整体html<br>分离出js，css，分别预编译 (没有写入到文件，那么对于对模块化语法有注入的打包工具就有干扰，只能自己实现模块化)<br>再插入html</p>
+<p>主要问题就是后端模板编译的输出和打包工具的输入接不起来</p>
+<p>如果能</p>
+]]></content>
+      
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[express-learn]]></title>
+      <url>http://http://localhost:4000/2017/03/19/express-learn/</url>
+      <content type="html"></content>
+      
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[移动端响应式解决方案]]></title>
+      <url>http://http://localhost:4000/2017/03/13/move-side-respones/</url>
+      <content type="html"><![CDATA[<p>移动端尺寸不一，所以需要一套自适应的方案。<br>需要考虑我们的场景，有些时候，我们只需要宽度按设备尺寸伸缩，纵向上可以是固定的值<br>有时候，我们需要横向，纵向上都能按设备尺寸伸缩，例如铺满屏幕的应用。</p>
+<h2 id="viewport"><a href="#viewport" class="headerlink" title="viewport"></a>viewport</h2><h2 id="百分比"><a href="#百分比" class="headerlink" title="百分比"></a>百分比</h2><p>百分比布局只能用在横向上，比如宽度, 并且它是参照父元素的宽度。<br>高度百分比，需要html,body 等一层一层的往下写宽度，才能有参照</p>
+<p>其中有个坑就是margin，padding，它的百分比是参照的父元素的<strong>宽度</strong>。 所以用百分比布局，如果要在纵向上自适应，就相当麻烦了。</p>
+<p>有一种情况例外，那就是纯绝对定位布局，都参照最外层元素的宽高就行了。</p>
+<p>建议使用sass进行百分比换算</p>
+<h2 id="纯绝对定位"><a href="#纯绝对定位" class="headerlink" title="纯绝对定位"></a>纯绝对定位</h2><h2 id="rem"><a href="#rem" class="headerlink" title="rem"></a>rem</h2><p>既然要伸缩，就需要一个统一的参照标准，这是最好的。</p>
+<p>在rem是参照html元素的字体大小, 可以做到所有元素有统一的参照。</p>
+<p>不过rem的布局，在缩小时不一定能完全按比例缩小。</p>
+<blockquote>
+<p>rem的换算</p>
+</blockquote>
+<p>rem 默认是1rem=16px<br>有个坑点，是手机上的分辨率高，一个物理像素点往往是几个像素点组成, 所以ue给的psd量的尺寸需要经过换算，一般参照iPhone6 设计的图，要除以2，参照iPhone6 plus的需要除3</p>
+<p>下面是一个用js动态计算html的rem的例子</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">(<span class="function"><span class="keyword">function</span> (<span class="params">win,doc</span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> docEl = doc.documentElement,</div><div class="line">        resizeEvt = <span class="string">'orientationchange'</span> <span class="keyword">in</span> <span class="built_in">window</span> ? <span class="string">'orientationchange'</span> : <span class="string">'resize'</span>,</div><div class="line">        timer = <span class="literal">null</span>,</div><div class="line"></div><div class="line">        recalc = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">            clearTimeout(timer);</div><div class="line">            timer = setTimeout(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">                <span class="keyword">var</span> viewportWidth = docEl.getBoundingClientRect().width || docEl.clientWidth;</div><div class="line">                <span class="keyword">if</span> (!viewportWidth) <span class="keyword">return</span>;</div><div class="line"></div><div class="line">                docEl.style.fontSize = <span class="number">100</span> * (viewportWidth / <span class="number">750</span>) + <span class="string">'px'</span>;</div><div class="line">            &#125;,<span class="number">10</span>);</div><div class="line">        &#125;;</div><div class="line"></div><div class="line">    recalc();</div><div class="line"></div><div class="line">    win.addEventListener(resizeEvt, recalc, <span class="literal">false</span>);</div><div class="line">&#125;)(<span class="built_in">window</span>,<span class="built_in">document</span>) ;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line"></div><div class="line">$baseFontSize = 40px; // iphone6 下</div><div class="line"></div><div class="line">@function rem($px)&#123;</div><div class="line">  @return $px / $baseFontSize * 1rem;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="flexbox"><a href="#flexbox" class="headerlink" title="flexbox"></a>flexbox</h2><p>弹性布局对移动端比较友好，功能比inline-block强大，在横向上的布局，建议用flexbox<br>移动端兼容，建议使用autoprefix</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><div class="line"><span class="selector-class">.f-box</span>&#123;</div><div class="line">  <span class="attribute">display</span>: flex;</div><div class="line">  <span class="attribute">flex-wrap</span>: nowrap;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="selector-class">.f-box-cld</span>&#123;</div><div class="line">  <span class="attribute">flex </span>: <span class="number">1</span>;</div><div class="line">  <span class="attribute">width</span>: <span class="number">40%</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+]]></content>
+      
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[webstorm-learn]]></title>
+      <url>http://http://localhost:4000/2017/03/13/webstorm-learn/</url>
+      <content type="html"><![CDATA[<h2 id="未经授权报错"><a href="#未经授权报错" class="headerlink" title="未经授权报错"></a>未经授权报错</h2><p>访问sass编译后的css，出现警告。<br><img src="http://p1.bpimg.com/567571/79b8a3afeb43ff83.png" alt="pic alt" title="opt title"></p>
+<p>设置允许非法请求<br><img src="http://p1.bpimg.com/567571/b810bf7626dfe381.png" alt="pic alt" title="opt title"></p>
+<h2 id="vue中scss报错"><a href="#vue中scss报错" class="headerlink" title="*.vue中scss报错"></a>*.vue中scss报错</h2><figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">&lt;style lang=&apos;scss&apos; rel=&apos;stylesheet/scss&apos;&gt;&lt;/style&gt;</div></pre></td></tr></table></figure>
+<p>添加<code>rel=stylesheet/scss</code></p>
+<h2 id="手机访问内置server"><a href="#手机访问内置server" class="headerlink" title="手机访问内置server"></a>手机访问内置server</h2><p><img src="http://p1.bpimg.com/567571/6eb329c840332e54.png" alt="pic alt" title="opt title"></p>
+<p>注意端口需要修改，63342是默认端口。</p>
+<h2 id="配置动态编译scss"><a href="#配置动态编译scss" class="headerlink" title="配置动态编译scss"></a>配置动态编译scss</h2><p>添加file watcher <a href="https://www.jetbrains.com/help/webstorm/2016.3/transpiling-sass-less-and-scss-to-css.html#d253312e140" target="_blank" rel="external">官方文档</a><br>注意sass需要使用 <strong>gem</strong> 安装</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">sudo gem install sass</div></pre></td></tr></table></figure>
+<p>gem env 可以查看包的位置</p>
+<blockquote>
+<p>编译中文乱码</p>
+</blockquote>
+<p> 关于使用gulp压缩sass中文乱码问题：Invalid US-ASCII character “\xE5”) </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">cd /Library/Ruby/Gems/2.0.0/gems/sass-3.4.23/lib/sass</div><div class="line">sudo vim engine.rb</div></pre></td></tr></table></figure>
+<p>添加一行 <code>Encoding.default_external = Encoding.find(&#39;utf-8&#39;)</code>, 在require的后面</p>
+<h2 id="window下watch失效"><a href="#window下watch失效" class="headerlink" title="window下watch失效"></a>window下watch失效</h2><p>  <img src="http://i2.muimg.com/567571/9ea5c3c38362f3f5.png" alt="pic alt" title="opt title"></p>
+<p>  把safe_write选项去掉</p>
+]]></content>
+      
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[webuploader入门指南]]></title>
+      <url>http://http://localhost:4000/2017/03/11/webuploader-learn/</url>
+      <content type="html"><![CDATA[<h2 id="简单示例"><a href="#简单示例" class="headerlink" title="简单示例"></a>简单示例</h2><figure class="highlight css"><table><tr><td class="code"><pre><div class="line"><span class="selector-class">.webuploader-container</span> &#123;</div><div class="line">    <span class="attribute">position</span>: relative;</div><div class="line">&#125;</div><div class="line"><span class="selector-class">.webuploader-element-invisible</span> &#123;</div><div class="line">    <span class="attribute">position</span>: absolute <span class="meta">!important</span>;</div><div class="line">    <span class="attribute">clip</span>: <span class="built_in">rect</span>(1px 1px 1px 1px); <span class="comment">/* IE6, IE7 */</span></div><div class="line">    <span class="attribute">clip</span>: <span class="built_in">rect</span>(1px,1px,1px,1px);</div><div class="line">&#125;</div><div class="line"><span class="selector-class">.webuploader-pick</span> &#123;</div><div class="line">    <span class="attribute">position</span>: relative;</div><div class="line">    <span class="attribute">display</span>: inline-block;</div><div class="line">    <span class="attribute">cursor</span>: pointer;</div><div class="line">    <span class="attribute">background</span>: <span class="number">#00b7ee</span>;</div><div class="line">    <span class="attribute">padding</span>: <span class="number">10px</span> <span class="number">15px</span>;</div><div class="line">    <span class="attribute">color</span>: <span class="number">#fff</span>;</div><div class="line">    <span class="attribute">text-align</span>: center;</div><div class="line">    <span class="attribute">border-radius</span>: <span class="number">3px</span>;</div><div class="line">    <span class="attribute">overflow</span>: hidden;</div><div class="line">&#125;</div><div class="line"><span class="selector-class">.webuploader-pick-hover</span> &#123;</div><div class="line">    <span class="attribute">background</span>: <span class="number">#00a2d4</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="selector-class">.webuploader-pick-disable</span> &#123;</div><div class="line">    <span class="attribute">opacity</span>: <span class="number">0.6</span>;</div><div class="line">    <span class="attribute">pointer-events</span>:none;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这些css是预定义钩子，用来重置input的样式和一些状态下的样式，可以自己定义</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="keyword">var</span> uploader = WebUploader.create(&#123;</div><div class="line">    <span class="attr">auto</span>: <span class="literal">true</span>, <span class="comment">// 选择完毕后自动上传</span></div><div class="line">    swf: <span class="string">'path_of_swf/Uploader.swf'</span>,</div><div class="line">    <span class="attr">pick</span> :&#123;</div><div class="line">        <span class="attr">id</span>: <span class="string">'#filePicker'</span>,</div><div class="line">        <span class="attr">label</span>: <span class="string">'点击选择图片'</span></div><div class="line">    &#125;,</div><div class="line">    <span class="attr">chunked</span> : <span class="literal">true</span>, </div><div class="line">    <span class="attr">threads</span> : <span class="number">1</span>, <span class="comment">// 设置并发请求数</span></div><div class="line">    chunkSize : <span class="number">1.7</span> * <span class="number">1024</span> * <span class="number">1024</span>, <span class="comment">// 分片大小</span></div><div class="line">    server: <span class="string">'../../server/fileupload.php'</span>,</div><div class="line">    <span class="attr">accept</span> : &#123;</div><div class="line">        <span class="attr">title</span>: <span class="string">'Images'</span>,</div><div class="line">        <span class="attr">extensions</span>: <span class="string">'gif,jpg,jpeg,bmp,png'</span>,</div><div class="line">        <span class="attr">mimeTypes</span>: <span class="string">'image/*'</span>,</div><div class="line">        <span class="attr">compress</span> : <span class="literal">false</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p><a href="http://fex.baidu.com/webuploader/doc/index.html#WebUploader_Uploader_md5File" target="_blank" rel="external">详细Api</a></p>
+<h2 id="携带自定义参数"><a href="#携带自定义参数" class="headerlink" title="携带自定义参数"></a>携带自定义参数</h2><figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 初始化的时候直接添加  </span></div><div class="line"><span class="keyword">var</span> uploader = <span class="keyword">new</span> WebUploader.Uploader(&#123;  </div><div class="line">    ...  </div><div class="line">    formData: &#123;  </div><div class="line">        <span class="attr">uid</span>: <span class="number">123</span>  </div><div class="line">    &#125;  </div><div class="line">    ...  </div><div class="line">&#125;);  </div><div class="line">  </div><div class="line"><span class="comment">// 初始化以后添加  </span></div><div class="line">uploader.options.formData.uid = <span class="number">123</span>;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>局部设置</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">uploader.on( <span class="string">'uploadBeforeSend'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"> block, data </span>) </span>&#123;  </div><div class="line">    <span class="comment">// block为分块数据。  </span></div><div class="line">  </div><div class="line">    <span class="comment">// file为分块对应的file对象。  </span></div><div class="line">    <span class="keyword">var</span> file = block.file;  </div><div class="line">  </div><div class="line">  </div><div class="line">    <span class="comment">// 修改data可以控制发送哪些携带数据。  </span></div><div class="line">    data.uid = <span class="number">123</span>;  </div><div class="line">    data.formData = &#123;&#125;;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<h2 id="关键事件点"><a href="#关键事件点" class="headerlink" title="关键事件点"></a>关键事件点</h2><figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">uploader.on(<span class="string">'fileQueued'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">file</span>) </span>&#123;</div><div class="line">    </div><div class="line">  uploader.md5File( file )</div><div class="line"></div><div class="line">        <span class="comment">// 及时显示进度</span></div><div class="line">        .progress(<span class="function"><span class="keyword">function</span>(<span class="params">percentage</span>) </span>&#123;</div><div class="line">            <span class="comment">//console.log('Percentage:', percentage);</span></div><div class="line">        &#125;)</div><div class="line"></div><div class="line">        <span class="comment">// 完成</span></div><div class="line">        .then(<span class="function"><span class="keyword">function</span>(<span class="params">val</span>) </span>&#123;</div><div class="line">            <span class="built_in">console</span>.log(<span class="string">'md5 result:'</span>, val);</div><div class="line">            uploader.option.formData.md5 = val;</div><div class="line">            uploader.upload();</div><div class="line">        &#125;);</div><div class="line">&#125;)</div><div class="line"></div><div class="line">uploader.on(<span class="string">'uploadBeforeSend'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">block , data</span>) </span>&#123;</div><div class="line">&#125;)</div><div class="line"></div><div class="line">uploader.on(<span class="string">'uploadProgress'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">file , percentage</span>) </span>&#123;</div><div class="line">    </div><div class="line">&#125;)</div><div class="line"></div><div class="line">uploader.on(<span class="string">'uploadSuccess'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">file ,response</span>) </span>&#123;</div><div class="line">    </div><div class="line">&#125;)</div><div class="line"></div><div class="line">uploader.on(<span class="string">'uploadError'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">file ,reason</span>) </span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(reason);</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+]]></content>
+      
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[模板文件数据Api可视化抽象]]></title>
+      <url>http://http://localhost:4000/2017/03/02/ApiDataAbstraction/</url>
+      <content type="html"><![CDATA[<h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>通过可视化生成模板文件</p>
+<p>当这个模板文件涉及到后端数据交互的时候，这个就很难抽象了，因为API无法抽象确定，每次都可能是唯一的。</p>
+<h2 id="方案"><a href="#方案" class="headerlink" title="方案"></a>方案</h2><p>我们根据后端返回的结果，确定占位符，然后交给前端可视化工具，在数据结果层面做占位符映射，而不在输入层面做占位符映射，因为无法穷举。</p>
+<p><img src="http://p1.bqimg.com/567571/4ca04cd67e304b66.png" alt="pic alt" title="opt title"></p>
+]]></content>
+      
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[webpack2.x 入门教学]]></title>
+      <url>http://http://localhost:4000/2017/02/26/webpack2-x-learn/</url>
+      <content type="html"></content>
+      
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[webpack1.x 入门教学]]></title>
       <url>http://http://localhost:4000/2017/02/22/webpack-learn/</url>
       <content type="html"><![CDATA[<p><img src="http://webpackdoc.com/images/what-is-webpack.png" alt="pic alt" title="opt title"></p>
 <p>webpack 是一个包含预编译/动态加载的<strong>模块化方案</strong>.  会将各种依赖的资源最后打包成1个或者几个文件, 适合单页应用</p>
 <p>它与gulp，fis3是有本质区别的，它本质上是模块化方案对应requirejs之类的，主要能力是打包，只不过包含了部分构建的能力。它可以作为gulp中的task,负责打包工作。</p>
+<p>webpack 可以支持AMD，CMD，UMD的打包, <strong>请注意如果代码复杂度没有涉及到模块化，那么完全不需要用webpack，比如简单的运营页面，自己做好简单的模块化就行了。因为webpack的优势在这里根本用不上</strong> , 这种情况推荐用gulp。</p>
 <p><strong>单入口的情况下，不管重复require多少次一个模块，都只会打包一次。</strong><br><strong>多入口实际就是分别执行多个单入口，彼此之间不影响, 如果都引入同一个模块，会被引入多次</strong></p>
 <p>CommonsChunkPlugin解决了这个问题, 就是把多个入口共同的依赖都给定义成 一个新入口</p>
 <h2 id="核心概念解析"><a href="#核心概念解析" class="headerlink" title="核心概念解析"></a>核心概念解析</h2><blockquote>
@@ -26,7 +150,7 @@
 <blockquote>
 <p>HMR</p>
 </blockquote>
-<p>热插拔, 其本质上是一个插件, 作用是修改后自动刷新浏览器</p>
+<p>热插拔, 其本质上是一个插件, 作用是修改后自动刷新浏览器。 它有2种启动方式</p>
 <p>CLI (推荐)</p>
 <p><code>webpack-dev-server --hot --inline</code></p>
 <p>cfg</p>
@@ -36,8 +160,9 @@
 <blockquote>
 <p>异步加载模块</p>
 </blockquote>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="built_in">require</span>.ensure([],<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line"></div><div class="line">&#125;)</div></pre></td></tr></table></figure>
 <p>这是编译后的代码<br><img src="http://i1.piimg.com/567571/d62cf7c9f9a246d1.png" alt="pic alt" title="opt title"></p>
-<h2 id="常见配置解析"><a href="#常见配置解析" class="headerlink" title="常见配置解析"></a>常见配置解析</h2><figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">var</span> webpack = <span class="built_in">require</span>(<span class="string">"webpack"</span>);  <span class="comment">// 包含一些自带的插件，使用时需要引入</span></div><div class="line"><span class="keyword">var</span> HtmlwebpackPlugin = <span class="built_in">require</span>(<span class="string">'html-webpack-plugin'</span>);  <span class="comment">// 第三方插件需要安装，并引入</span></div><div class="line"><span class="keyword">var</span> OpenBrowserPlugin = <span class="built_in">require</span>(<span class="string">'open-browser-webpack-plugin'</span>);</div><div class="line"></div><div class="line"><span class="keyword">var</span> TEM_PATH = path.resolve(ROOT_PATH, <span class="string">'templates'</span>); <span class="comment">// 模板文件路径</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="built_in">module</span>.exports = &#123;</div><div class="line"></div><div class="line">  <span class="attr">entry</span>: &#123; <span class="comment">// 可以有多个入口</span></div><div class="line">	<span class="string">'main'</span> : <span class="string">'main.js'</span>,</div><div class="line">	<span class="string">'main2'</span> : <span class="string">'main2.js'</span>,</div><div class="line">	<span class="string">'vender'</span> : [<span class="string">'jqeury'</span>, <span class="string">'vue'</span>]</div><div class="line">  &#125;, </div><div class="line"></div><div class="line">  <span class="attr">output</span>: &#123;</div><div class="line">    <span class="attr">filename</span>: <span class="string">'bundle.js'</span>, <span class="comment">// 输出单文件，如果是多入口按文件名分文件打包则，顺带添加hash，[name].[hash].js , 如果不这么写，由于输出名一样，文件会被覆盖</span></div><div class="line">    publicPath :  <span class="string">''</span> <span class="comment">//打包后资源的url路径</span></div><div class="line">  &#125;,</div><div class="line"></div><div class="line">  <span class="attr">module</span>: &#123;</div><div class="line">    <span class="attr">loaders</span>:[ <span class="comment">// 针对资源文件</span></div><div class="line">      <span class="comment">// npm install --save-dev babel-loader babel-core babel-preset-es2015  babel-preset-react  编译jsx</span></div><div class="line">      &#123; <span class="attr">test</span>: <span class="regexp">/\.js[x]?$/</span>, <span class="attr">exclude</span>: <span class="regexp">/node_modules/</span>, <span class="attr">loader</span>: <span class="string">'babel-loader?presets[]=es2015&amp;presets[]=react'</span> &#125;, <span class="comment">// 简写  使用es6</span></div><div class="line">      &#123; <span class="attr">test</span>: <span class="regexp">/\.css$/</span>, <span class="attr">loader</span>: <span class="string">'style-loader!css-loader?modules'</span> &#125;, <span class="comment">// 将css文件插入dom</span></div><div class="line">      &#123;</div><div class="line">        <span class="attr">test</span>: <span class="regexp">/\.png$/</span>,</div><div class="line">        <span class="attr">loader</span>: <span class="string">"url-loader"</span>,  <span class="comment">// 将图片转换成base64</span></div><div class="line">        query: &#123; <span class="attr">mimetype</span>: <span class="string">"image/png"</span> &#125;</div><div class="line">      &#125;</div><div class="line">    ]</div><div class="line">  &#125;,</div><div class="line"></div><div class="line">  <span class="attr">externals</span>: &#123; <span class="comment">// 遇到require这些时, 不需要再编译. 适合那些常用的库, 已经在页面通过&lt;script&gt;引入了, 就无需都打包到一起了 , 全局变量申明</span></div><div class="line">        jquery: <span class="string">'jQuery'</span>,</div><div class="line">  &#125;,</div><div class="line"></div><div class="line">  <span class="attr">plugins</span>: [ <span class="comment">// 扩展webpack能力</span></div><div class="line"></div><div class="line">    <span class="keyword">new</span> HtmlwebpackPlugin(&#123;   <span class="comment">// 生产html文件，自动插入构建完成的bundle文件</span></div><div class="line">        title: <span class="string">'Hello World app'</span>,</div><div class="line">        <span class="attr">template</span>: path.resolve(TEM_PATH, <span class="string">'index.html'</span>),</div><div class="line">        <span class="attr">filename</span>: <span class="string">'index.html'</span>,</div><div class="line">        <span class="attr">chunks</span>: [<span class="string">'app'</span>, <span class="string">'vendors'</span>],  <span class="comment">//chunks这个参数告诉插件要引用entry里面的哪几个入口</span></div><div class="line">        inject: <span class="string">'body'</span> <span class="comment">//要把script插入到标签里</span></div><div class="line">    &#125;),</div><div class="line"></div><div class="line">    <span class="keyword">new</span> OpenBrowserPlugin(&#123;</div><div class="line">      <span class="attr">url</span>: <span class="string">'http://localhost:8080'</span></div><div class="line">    &#125;),</div><div class="line"></div><div class="line">    <span class="keyword">new</span> webpack.optimize.UglifyJsPlugin(&#123;       <span class="comment">// 混淆代码</span></div><div class="line">      compress: &#123;</div><div class="line">        <span class="attr">warnings</span>: <span class="literal">false</span></div><div class="line">      &#125;</div><div class="line">    &#125;),</div><div class="line"></div><div class="line">    <span class="keyword">new</span> webpack.ProvidePlugin(&#123; <span class="comment">// 让模块变成全局模块,不用每次都require, 只要发现有引用就会当成依赖传入</span></div><div class="line">      $: <span class="string">"jquery"</span>,</div><div class="line">      <span class="attr">jQuery</span>: <span class="string">"jquery"</span>,</div><div class="line">      <span class="string">"window.jQuery"</span>: <span class="string">"jquery"</span></div><div class="line">    &#125;)</div><div class="line"></div><div class="line">    <span class="keyword">new</span> webpack.optimize.CommonsChunkPlugin(&#123;  <span class="comment">// 提取公共部分为trunk文件,  所以在浏览器中加载的话，必须先加载 common.js names: ['vendor'], // 成为一个新的入口</span></div><div class="line">        filename: <span class="string">"commons.js"</span>, <span class="comment">// the filename of the commons chunk</span></div><div class="line">        trunks : [<span class="string">'main'</span>,<span class="string">'main2'</span>] <span class="comment">// 指定对那些入口进行提取，默认是对所有入口</span></div><div class="line">    &#125;),</div><div class="line"></div><div class="line">    <span class="keyword">new</span> webpack.HotModuleReplacementPlugin(),   <span class="comment">// 热插拔, 修改后自动刷新浏览器，有配置文件，和cli2中方式</span></div><div class="line">    <span class="keyword">new</span> webpack.NoErrorsPlugin(), <span class="comment">//在打包时不会因为错误而中断</span></div><div class="line"></div><div class="line">    <span class="keyword">new</span> webpack.DefinePlugin(&#123; <span class="comment">// 可以定义编译时的全局变量，有很多库（React, Vue等）会根据 NODE_ENV 这个变量来判断当前环境。为了尽可能减少包大小，在生产环境中要定义当前环境变量</span></div><div class="line">        __DEV__: <span class="built_in">JSON</span>.stringify(<span class="built_in">JSON</span>.parse(process.env.DEBUG || <span class="string">'false'</span>))</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    <span class="comment">/*optimize.OccurrenceOrderPlugin: 可以减少文件大小</span></div><div class="line"></div><div class="line">    optimize.DedupePlugin: 可以减少重复文件数</div><div class="line"></div><div class="line">    ExtractTextPlugin: 可以将所有css文件打包到一个css文件中*/</div><div class="line">  ]</div><div class="line"></div><div class="line"></div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<h2 id="常见配置解析"><a href="#常见配置解析" class="headerlink" title="常见配置解析"></a>常见配置解析</h2><figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">var</span> webpack = <span class="built_in">require</span>(<span class="string">"webpack"</span>);  <span class="comment">// 包含一些自带的插件，使用时需要引入</span></div><div class="line"><span class="keyword">var</span> HtmlwebpackPlugin = <span class="built_in">require</span>(<span class="string">'html-webpack-plugin'</span>);  <span class="comment">// 第三方插件需要安装，并引入</span></div><div class="line"><span class="keyword">var</span> OpenBrowserPlugin = <span class="built_in">require</span>(<span class="string">'open-browser-webpack-plugin'</span>);</div><div class="line"></div><div class="line"><span class="keyword">var</span> TEM_PATH = path.resolve(ROOT_PATH, <span class="string">'templates'</span>); <span class="comment">// 模板文件路径</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="built_in">module</span>.exports = &#123;</div><div class="line"></div><div class="line">  <span class="attr">entry</span>: &#123; <span class="comment">// 可以有多个入口</span></div><div class="line">	<span class="string">'main'</span> : <span class="string">'main.js'</span>,</div><div class="line">	<span class="string">'main2'</span> : <span class="string">'main2.js'</span>,</div><div class="line">	<span class="string">'vender'</span> : [<span class="string">'jqeury'</span>, <span class="string">'vue'</span>]</div><div class="line">  &#125;, </div><div class="line"></div><div class="line">  <span class="attr">output</span>: &#123;</div><div class="line">    <span class="attr">path</span> : path.resolve(__dirname,<span class="string">'dist'</span>), <span class="comment">// 打包后资源的输出路径</span></div><div class="line">    filename: <span class="string">'bundle.js'</span>, <span class="comment">// 输出单文件，如果是多入口按文件名分文件打包则，顺带添加hash，[name].[hash].js , 如果不这么写，由于输出名一样，文件会被覆盖</span></div><div class="line">    publicPath :  <span class="string">''</span> <span class="comment">// 替换资源url，src的时候的路径，线上访问的时候，比如访问cdn文件的时候</span></div><div class="line">    pathinfo : <span class="literal">true</span> <span class="comment">// 添加模块的注释信息,配合eval使用</span></div><div class="line">  &#125;,</div><div class="line"></div><div class="line">  <span class="attr">module</span>: &#123;</div><div class="line">    <span class="attr">loaders</span>:[ <span class="comment">// 针对资源文件</span></div><div class="line">      <span class="comment">// npm install --save-dev babel-loader babel-core babel-preset-es2015  babel-preset-react  编译jsx</span></div><div class="line">      &#123; <span class="attr">test</span>: <span class="regexp">/\.js[x]?$/</span>, <span class="attr">exclude</span>: <span class="regexp">/node_modules/</span>, <span class="attr">loader</span>: <span class="string">'babel-loader?presets[]=es2015&amp;presets[]=react'</span> &#125;, <span class="comment">// 简写  使用es6</span></div><div class="line">      &#123; <span class="attr">test</span>: <span class="regexp">/\.css$/</span>, <span class="attr">loader</span>: <span class="string">'style-loader!css-loader?modules|post-loader'</span> &#125;, <span class="comment">// 将css文件插入dom</span></div><div class="line">      &#123; <span class="comment">// 可读性好的写法</span></div><div class="line">        test: <span class="regexp">/\.png$/</span>,</div><div class="line">        <span class="attr">loader</span>: <span class="string">"url-loader"</span>,  <span class="comment">// 将图片转换成base64</span></div><div class="line">        query: &#123; <span class="attr">mimetype</span>: <span class="string">"image/png"</span> &#125;</div><div class="line">      &#125;</div><div class="line">    ]</div><div class="line">  &#125;,</div><div class="line"></div><div class="line">  <span class="attr">resolve</span> : &#123;   </div><div class="line"></div><div class="line">    <span class="attr">extensions</span>: [<span class="string">'.js'</span>, <span class="string">'.vue'</span>, <span class="string">'.json'</span>], <span class="comment">// 设置需要识别的扩展文件名 ，设置了此项后会覆盖默认的配置</span></div><div class="line"></div><div class="line">    modules: [   <span class="comment">// 类似nodejs的引用方式，当require一个模块，可以直接写相对路径</span></div><div class="line">	    resolve(<span class="string">'src'</span>),</div><div class="line">	    resolve(<span class="string">'node_modules'</span>)</div><div class="line">    ],</div><div class="line"></div><div class="line"></div><div class="line">	<span class="attr">alias</span> : &#123;  <span class="comment">// 设置路径别名</span></div><div class="line">		lib : <span class="string">'/util/head/lib'</span></div><div class="line">	&#125;</div><div class="line">  &#125;,</div><div class="line"></div><div class="line">  <span class="attr">externals</span>: &#123; <span class="comment">// 遇到require这些时, 不需要再编译. 适合那些常用的库, 已经在页面通过&lt;script&gt;引入了, 就无需都打包到一起了 , 全局变量申明</span></div><div class="line">      jquery: <span class="string">'jQuery'</span>,</div><div class="line">  &#125;,</div><div class="line"></div><div class="line">  <span class="attr">postcss</span>: [</div><div class="line">      <span class="built_in">require</span>(<span class="string">'autoprefixer'</span>)</div><div class="line">  ],</div><div class="line"></div><div class="line">  <span class="attr">devtool</span> : <span class="string">'eval'</span> ,  <span class="comment">// 有7中模式，eval速度最快, 建议开发的时候使用</span></div><div class="line"></div><div class="line">  plugins: [ <span class="comment">// 扩展webpack能力</span></div><div class="line"></div><div class="line">    <span class="keyword">new</span> HtmlwebpackPlugin(&#123;   <span class="comment">// 生产html文件，自动插入构建完成的bundle文件</span></div><div class="line">        title: <span class="string">'Hello World app'</span>,</div><div class="line">        <span class="attr">template</span>: path.resolve(TEM_PATH, <span class="string">'index.html'</span>),</div><div class="line">        <span class="attr">filename</span>: <span class="string">'index.html'</span>,</div><div class="line">        <span class="attr">chunks</span>: [<span class="string">'app'</span>, <span class="string">'vendors'</span>],  <span class="comment">//chunks这个参数告诉插件要引用entry里面的哪几个入口</span></div><div class="line">        inject: <span class="string">'body'</span> <span class="comment">//要把script插入到标签里</span></div><div class="line">    &#125;),</div><div class="line"></div><div class="line">    <span class="keyword">new</span> OpenBrowserPlugin(&#123;</div><div class="line">      <span class="attr">url</span>: <span class="string">'http://localhost:8080'</span></div><div class="line">    &#125;),</div><div class="line"></div><div class="line">    <span class="keyword">new</span> webpack.optimize.UglifyJsPlugin(&#123;       <span class="comment">// 混淆代码</span></div><div class="line">      compress: &#123;</div><div class="line">        <span class="attr">warnings</span>: <span class="literal">false</span></div><div class="line">      &#125;</div><div class="line">    &#125;),</div><div class="line"></div><div class="line">    <span class="keyword">new</span> webpack.ProvidePlugin(&#123; <span class="comment">// 让模块变成全局模块,不用每次都require, 只要发现有引用就会当成依赖传入</span></div><div class="line">      $: <span class="string">"jquery"</span>,</div><div class="line">      <span class="attr">jQuery</span>: <span class="string">"jquery"</span>,</div><div class="line">      <span class="string">"window.jQuery"</span>: <span class="string">"jquery"</span></div><div class="line">    &#125;)</div><div class="line"></div><div class="line">    <span class="keyword">new</span> webpack.optimize.CommonsChunkPlugin(&#123;  <span class="comment">// 提取公共部分为trunk文件,  所以在浏览器中加载的话，必须先加载 common.js names: ['vendor'], // 成为一个新的入口 filename: "commons.js", // the filename of the commons chunk</span></div><div class="line">        trunks : [<span class="string">'main'</span>,<span class="string">'main2'</span>] <span class="comment">// 指定对那些入口进行提取，默认是对所有入口</span></div><div class="line">    &#125;),</div><div class="line"></div><div class="line">    <span class="keyword">new</span> webpack.HotModuleReplacementPlugin(),   <span class="comment">// 热插拔, 修改后自动刷新浏览器，有配置文件，和cli2中方式</span></div><div class="line">    <span class="keyword">new</span> webpack.NoErrorsPlugin(), <span class="comment">//在打包时不会因为错误而中断</span></div><div class="line"></div><div class="line">    <span class="keyword">new</span> webpack.DefinePlugin(&#123; <span class="comment">// 可以定义编译时的全局变量，有很多库（React, Vue等）会根据 NODE_ENV 这个变量来判断当前环境。为了尽可能减少包大小，在生产环境中要定义当前环境变量</span></div><div class="line">        __DEV__: <span class="built_in">JSON</span>.stringify(<span class="built_in">JSON</span>.parse(process.env.DEBUG || <span class="string">'false'</span>))</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    <span class="comment">/*optimize.OccurrenceOrderPlugin: 可以减少文件大小</span></div><div class="line"></div><div class="line">    optimize.DedupePlugin: 可以减少重复文件数</div><div class="line"></div><div class="line">    ExtractTextPlugin: 可以将所有css文件打包到一个css文件中*/</div><div class="line">  ]</div><div class="line"></div><div class="line">&#125;;</div></pre></td></tr></table></figure>
 <h2 id="开发-调试技巧"><a href="#开发-调试技巧" class="headerlink" title="开发/调试技巧"></a>开发/调试技巧</h2><p><code>进度和颜色</code><br>当项目逐渐变大，webpack 的编译时间会变长，可以通过参数让编译的输出内容带有进度和颜色。<br>webpack –progress –colors</p>
 <p><code>监听增量编译</code><br>webpack –progress –colors –watch</p>
 <blockquote>
@@ -51,16 +176,22 @@
 </li>
 <li><p>webpack-dev-server –content-base build/   指定server的根目录，不指定则为当前目录</p>
 </li>
-<li><p>–devtool eval：为你的代码创建源地址。当有任何报错的时候可以让你更加精确地定位到文件和行号</p>
+<li><p>–devtool eval：为你的代码创建source map。当有任何报错的时候可以让你更加精确地定位到文件和行号</p>
 </li>
 <li><p>如果webpack使用的1.x的版本，那么webpack-dev-server也要使用1.x的版本，否则会报如下错误：Connot find module ‘webpack/bin/config-yargs’。</p>
 </li>
 <li><p>如果已经有一个工程中使用了webpack-dev-server，并且在运行中，没有关掉的话，那么8080端口就被占用了，此时如果在另一个工程中使用webpack-dev-server就会报错：Error: listen EADDRINUSE 127.0.0.1:8080。*</p>
 </li>
 </ul>
+<blockquote>
+<p><a href="http://sanwen.net/a/ltjldpo.html" target="_blank" rel="external">sourceMap</a></p>
+</blockquote>
+<p>webpack 支持7中sourceMap方式</p>
+<p>模式    解释<br>eval    每个module会封装到 eval 里包裹起来执行，并且会在末尾追加注释 //@ sourceURL.<br>source-map  生成一个SourceMap文件.<br>hidden-source-map   和 source-map 一样，但不会在 bundle 末尾追加注释.<br>inline-source-map   生成一个 DataUrl 形式的 SourceMap 文件.<br>eval-source-map 每个module会通过eval()来执行，并且生成一个DataUrl形式的SourceMap.<br>cheap-source-map    生成一个没有列信息（column-mappings）的SourceMaps文件，不包含loader的 sourcemap（譬如 babel 的 sourcemap）<br>cheap-module-source-map 生成一个没有列信息（column-mappings）的SourceMaps文件，同时 loader 的 sourcemap 也被简化为只包含对应行的。</p>
 <p><code>排查错误</code></p>
 <p>webpack –display-error-details</p>
-<p><code>HMR</code><br>webpack-dev-server –hot –inline</p>
+<p><code>HMR</code> 热替换<br>webpack-dev-server –hot –inline</p>
+<p>这个在跨平台开发或者较复杂的项目中特别有用，比如我有个层级很深的操作，操作了10多次才进入这个界面，这个时候更改了一个小功能，如果没有热替换，只能刷新整个页面，再重复操作10多次才能看到效果，热替换改变了这一切</p>
 <p><code>使用绝对路径</code><br>Webpack 中涉及路径配置最好使用绝对路径，建议通过<br><code>path.resolve(__dirname, &quot;app/folder&quot;)</code> 或<br><code>path.join(__dirname, &quot;app&quot;, &quot;folder&quot;)</code> 的方式来配置，以兼容 Windows 环境。</p>
 <h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><p><a href="https://github.com/ruanyf/webpack-demos#demo01-entry-file-source" target="_blank" rel="external">阮一峰webpack入门项目</a><br><a href="http://cnodejs.org/topic/5867bb575eac96bb04d3e301" target="_blank" rel="external">CommonsChunkPlugin解析</a></p>
 ]]></content>
@@ -99,7 +230,8 @@
     <entry>
       <title><![CDATA[vue是什么]]></title>
       <url>http://http://localhost:4000/2017/02/13/what-is-vue/</url>
-      <content type="html"><![CDATA[<h2 id="vue实战"><a href="#vue实战" class="headerlink" title="vue实战"></a>vue实战</h2><h3 id="vue-cli"><a href="#vue-cli" class="headerlink" title="vue-cli"></a>vue-cli</h3><p>vue-cli 是vue project 的<strong>手脚架工具</strong>，官方用webpack/browserfy, 可以自定义模板, 包括eslint  karma 等完整技术栈</p>
+      <content type="html"><![CDATA[<h2 id="面向数据驱动"><a href="#面向数据驱动" class="headerlink" title="面向数据驱动"></a>面向数据驱动</h2><p>这一点，虽然看着很好理解，但在实际开发过程中，不一定能把握住精髓。我们被jQuery等dom操作的库洗脑太深了，不自觉的会往dom操作上面去想，其实vue已经做了dom操作的封装，我们真正关心的是<strong>数据的变化</strong>，一切状态的改变，ui的改变都应该是数据的变化，我们focus在数据这个点上，dom操作交给vue去处理就好。</p>
+<h2 id="vue实战"><a href="#vue实战" class="headerlink" title="vue实战"></a>vue实战</h2><h3 id="vue-cli"><a href="#vue-cli" class="headerlink" title="vue-cli"></a>vue-cli</h3><p>vue-cli 是vue project 的<strong>手脚架工具</strong>，官方用webpack/browserfy, 可以自定义模板, 包括eslint  karma 等完整技术栈</p>
 <blockquote>
 <p>Useage</p>
 </blockquote>
@@ -123,7 +255,41 @@
 <p>自定义模板</p>
 </blockquote>
 <p><code>vue init username/repo my-project</code></p>
-<h3 id="webpack入门"><a href="#webpack入门" class="headerlink" title="webpack入门"></a>webpack入门</h3>]]></content>
+<h3 id="webpack入门"><a href="#webpack入门" class="headerlink" title="webpack入门"></a>webpack入门</h3><h3 id="vuex"><a href="#vuex" class="headerlink" title="vuex"></a><a href="http://vuex.vuejs.org/zh-cn/intro.html" target="_blank" rel="external">vuex</a></h3><p>Vuex 是一个专为 Vue.js 应用程序开发的<strong>状态管理模式</strong>。它采用集中式存储管理应用的所有组件的状态，并以<strong>相应的规则</strong>保证状态以一种可预测的方式发生变化</p>
+<p>状态其实也是数据，在一个整体应用中，状态被分散了在各个组件内部，然而某些场景是需要将状态共享给其他组件，或者其他组件也需要修改同一状态。</p>
+<p>vuex的解决方法是将这些状态和改变状态的行为都提出来，做一个集中式的管理, 所有组件只需要和store进行就交互就可以了。</p>
+<p>对比全局的事件中心，它只提供了行为的共享，并未提供状态的共享。</p>
+<p>vuex可以看成是全局变量 + 全局事件中心的结合, 同时具有响应式的能力。</p>
+<blockquote>
+<p>单项数据流</p>
+</blockquote>
+<p>多个视图依赖于同一状态。<br>来自不同视图的行为需要变更同一状态</p>
+<p>对于问题一，传参的方法对于多层嵌套的组件将会非常繁琐，并且对于兄弟组件间的状态传递无能为力。对于问题二，我们经常会采用父子组件直接引用或者通过事件来变更和同步状态的多份拷贝。以上的这些模式非常脆弱，通常会导致无法维护的代码。</p>
+<blockquote>
+<p>什么情况下使用vuex</p>
+</blockquote>
+<p>如果您不打算开发大型单页应用，使用 Vuex 可能是繁琐冗余的。确实是如此——如果您的应用够简单，您最好不要使用 Vuex。一个简单的 global event bus 就足够您所需了。但是，如果您需要构建是一个中大型单页应用，您很可能会考虑如何更好地在组件外部管理状态，</p>
+<p>使用 Vuex 并不意味着你需要将所有的状态放入 Vuex。虽然将所有的状态放到 Vuex 会使状态变化更显式和易调试，但也会使代码变得冗长和不直观。如果有些状态严格属于单个组件，最好还是作为组件的局部状态。你应该根据你的应用开发需要进行权衡和确定。</p>
+<blockquote>
+<p>使用</p>
+</blockquote>
+<p>要使用 store ，首先必须 Vue.use(Vuex) ，然后将 store const store = new Vuex.store() inject 定义到 Vue 实例 app 中 new Vue({store}) ，实现从根组件注入到所有子组件中，接着就可以在子组件中使用 this.$store 调用了。</p>
+<p>当一个组件需要使用多个某 store 的状态属性或 getters ，可以使用 shared helper —— 共享帮手 mapState ，它会返回一个对象 。</p>
+<p>state可以设置计算属性</p>
+<p>一条重要的原则就是要记住 mutation 必须是同步函数<br>store.commit(‘increment’)<br>// 任何由 “increment” 导致的状态变更都应该在此刻完成。</p>
+<p>store是响应式的，变化后，会触发vue组件更新</p>
+<blockquote>
+<p>组件通信</p>
+</blockquote>
+<p>refs方式：parent.$refs.list.<method><br>customer event方式: 先dispatch给父组件，再由父组件broadcast给子组件(vue1.x)<br>event bus 使用一个空的vue对象，作为全局的事件中心<br>props方式</method></p>
+<h2 id="vue1-x-迁移-vue2-x"><a href="#vue1-x-迁移-vue2-x" class="headerlink" title="vue1.x 迁移 vue2.x"></a>vue1.x 迁移 vue2.x</h2><h2 id="vuex1-x-迁移-vuex2-x"><a href="#vuex1-x-迁移-vuex2-x" class="headerlink" title="vuex1.x 迁移 vuex2.x"></a>vuex1.x 迁移 vuex2.x</h2><ol>
+<li>mutation的触发变成了commit</li>
+<li>action可以写入到store里面</li>
+<li>mapGetter，mapAction，mapMution，帮助我们映射store,getter到本地</li>
+<li>action参数的改变，只有2个参数</li>
+</ol>
+<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><p><a href="https://segmentfault.com/a/1190000005018970" target="_blank" rel="external">vuex示例</a></p>
+]]></content>
       
         
     </entry>
@@ -2347,6 +2513,22 @@ C-x v a 创建gnu风格的更改日志(create changelog file in gnu-style)
 <figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"></div><div class="line">gulp.task(<span class="string">'ref'</span>,<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    gulp.src(<span class="string">'unittest/mocha/index.html'</span>)</div><div class="line">        .pipe(useref())</div><div class="line">        .pipe(gulpif(<span class="string">'*.js'</span>, rev()))</div><div class="line">        .pipe(revReplace())</div><div class="line">        .pipe(gulp.dest(distPath))</div><div class="line">        .pipe(rev.manifest())</div><div class="line">        .pipe(gulp.dest(revPath));</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
 <p>将打包后的文件变成单文件，然后做单文件处理</p>
 <p>被打包的文件应该自行做单文件处理，和资源定位</p>
+<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><ol>
+<li>gulp的任务是异步执行的不能保证顺序，使用gulp-sequence同步执行任务</li>
+</ol>
+<ul>
+<li><p>dest不能重命名，使用gulp-rename解决</p>
+</li>
+<li><p>最好分成开发配置，上线配置2分，互不干扰</p>
+</li>
+<li><p>插件太多，每个都要require很麻烦，使用gulp-load-plugins解决，$.pluginName , 驼峰命名</p>
+</li>
+</ul>
+<ol>
+<li>API</li>
+</ol>
+<p>gulp.src</p>
+<p>gulp.dest</p>
 ]]></content>
       
         <categories>

@@ -58,43 +58,19 @@
 
 
 
-<meta name="description" content="vue实战vue-clivue-cli 是vue project 的手脚架工具，官方用webpack/browserfy, 可以自定义模板, 包括eslint  karma 等完整技术栈
-
-Useage
-
-vue init &amp;lt;template-name&amp;gt; &amp;lt;project-name&amp;gt;
-
-默认包含这几个模板
-
-
-webpack - A full-featured Webpac">
+<meta name="description" content="面向数据驱动这一点，虽然看着很好理解，但在实际开发过程中，不一定能把握住精髓。我们被jQuery等dom操作的库洗脑太深了，不自觉的会往dom操作上面去想，其实vue已经做了dom操作的封装，我们真正关心的是数据的变化，一切状态的改变，ui的改变都应该是数据的变化，我们focus在数据这个点上，dom操作交给vue去处理就好。
+vue实战vue-clivue-cli 是vue project 的手">
 <meta property="og:type" content="article">
 <meta property="og:title" content="vue是什么">
 <meta property="og:url" content="http://http://localhost:4000/2017/02/13/what-is-vue/index.html">
 <meta property="og:site_name" content="上善若水">
-<meta property="og:description" content="vue实战vue-clivue-cli 是vue project 的手脚架工具，官方用webpack/browserfy, 可以自定义模板, 包括eslint  karma 等完整技术栈
-
-Useage
-
-vue init &amp;lt;template-name&amp;gt; &amp;lt;project-name&amp;gt;
-
-默认包含这几个模板
-
-
-webpack - A full-featured Webpac">
-<meta property="og:updated_time" content="2017-02-22T11:20:43.000Z">
+<meta property="og:description" content="面向数据驱动这一点，虽然看着很好理解，但在实际开发过程中，不一定能把握住精髓。我们被jQuery等dom操作的库洗脑太深了，不自觉的会往dom操作上面去想，其实vue已经做了dom操作的封装，我们真正关心的是数据的变化，一切状态的改变，ui的改变都应该是数据的变化，我们focus在数据这个点上，dom操作交给vue去处理就好。
+vue实战vue-clivue-cli 是vue project 的手">
+<meta property="og:updated_time" content="2017-04-03T15:29:16.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="vue是什么">
-<meta name="twitter:description" content="vue实战vue-clivue-cli 是vue project 的手脚架工具，官方用webpack/browserfy, 可以自定义模板, 包括eslint  karma 等完整技术栈
-
-Useage
-
-vue init &amp;lt;template-name&amp;gt; &amp;lt;project-name&amp;gt;
-
-默认包含这几个模板
-
-
-webpack - A full-featured Webpac">
+<meta name="twitter:description" content="面向数据驱动这一点，虽然看着很好理解，但在实际开发过程中，不一定能把握住精髓。我们被jQuery等dom操作的库洗脑太深了，不自觉的会往dom操作上面去想，其实vue已经做了dom操作的封装，我们真正关心的是数据的变化，一切状态的改变，ui的改变都应该是数据的变化，我们focus在数据这个点上，dom操作交给vue去处理就好。
+vue实战vue-clivue-cli 是vue project 的手">
 
 
 
@@ -324,7 +300,8 @@ webpack - A full-featured Webpac">
       
 
       
-        <h2 id="vue实战"><a href="#vue实战" class="headerlink" title="vue实战"></a>vue实战</h2><h3 id="vue-cli"><a href="#vue-cli" class="headerlink" title="vue-cli"></a>vue-cli</h3><p>vue-cli 是vue project 的<strong>手脚架工具</strong>，官方用webpack/browserfy, 可以自定义模板, 包括eslint  karma 等完整技术栈</p>
+        <h2 id="面向数据驱动"><a href="#面向数据驱动" class="headerlink" title="面向数据驱动"></a>面向数据驱动</h2><p>这一点，虽然看着很好理解，但在实际开发过程中，不一定能把握住精髓。我们被jQuery等dom操作的库洗脑太深了，不自觉的会往dom操作上面去想，其实vue已经做了dom操作的封装，我们真正关心的是<strong>数据的变化</strong>，一切状态的改变，ui的改变都应该是数据的变化，我们focus在数据这个点上，dom操作交给vue去处理就好。</p>
+<h2 id="vue实战"><a href="#vue实战" class="headerlink" title="vue实战"></a>vue实战</h2><h3 id="vue-cli"><a href="#vue-cli" class="headerlink" title="vue-cli"></a>vue-cli</h3><p>vue-cli 是vue project 的<strong>手脚架工具</strong>，官方用webpack/browserfy, 可以自定义模板, 包括eslint  karma 等完整技术栈</p>
 <blockquote>
 <p>Useage</p>
 </blockquote>
@@ -348,7 +325,41 @@ webpack - A full-featured Webpac">
 <p>自定义模板</p>
 </blockquote>
 <p><code>vue init username/repo my-project</code></p>
-<h3 id="webpack入门"><a href="#webpack入门" class="headerlink" title="webpack入门"></a>webpack入门</h3>
+<h3 id="webpack入门"><a href="#webpack入门" class="headerlink" title="webpack入门"></a>webpack入门</h3><h3 id="vuex"><a href="#vuex" class="headerlink" title="vuex"></a><a href="http://vuex.vuejs.org/zh-cn/intro.html" target="_blank" rel="external">vuex</a></h3><p>Vuex 是一个专为 Vue.js 应用程序开发的<strong>状态管理模式</strong>。它采用集中式存储管理应用的所有组件的状态，并以<strong>相应的规则</strong>保证状态以一种可预测的方式发生变化</p>
+<p>状态其实也是数据，在一个整体应用中，状态被分散了在各个组件内部，然而某些场景是需要将状态共享给其他组件，或者其他组件也需要修改同一状态。</p>
+<p>vuex的解决方法是将这些状态和改变状态的行为都提出来，做一个集中式的管理, 所有组件只需要和store进行就交互就可以了。</p>
+<p>对比全局的事件中心，它只提供了行为的共享，并未提供状态的共享。</p>
+<p>vuex可以看成是全局变量 + 全局事件中心的结合, 同时具有响应式的能力。</p>
+<blockquote>
+<p>单项数据流</p>
+</blockquote>
+<p>多个视图依赖于同一状态。<br>来自不同视图的行为需要变更同一状态</p>
+<p>对于问题一，传参的方法对于多层嵌套的组件将会非常繁琐，并且对于兄弟组件间的状态传递无能为力。对于问题二，我们经常会采用父子组件直接引用或者通过事件来变更和同步状态的多份拷贝。以上的这些模式非常脆弱，通常会导致无法维护的代码。</p>
+<blockquote>
+<p>什么情况下使用vuex</p>
+</blockquote>
+<p>如果您不打算开发大型单页应用，使用 Vuex 可能是繁琐冗余的。确实是如此——如果您的应用够简单，您最好不要使用 Vuex。一个简单的 global event bus 就足够您所需了。但是，如果您需要构建是一个中大型单页应用，您很可能会考虑如何更好地在组件外部管理状态，</p>
+<p>使用 Vuex 并不意味着你需要将所有的状态放入 Vuex。虽然将所有的状态放到 Vuex 会使状态变化更显式和易调试，但也会使代码变得冗长和不直观。如果有些状态严格属于单个组件，最好还是作为组件的局部状态。你应该根据你的应用开发需要进行权衡和确定。</p>
+<blockquote>
+<p>使用</p>
+</blockquote>
+<p>要使用 store ，首先必须 Vue.use(Vuex) ，然后将 store const store = new Vuex.store() inject 定义到 Vue 实例 app 中 new Vue({store}) ，实现从根组件注入到所有子组件中，接着就可以在子组件中使用 this.$store 调用了。</p>
+<p>当一个组件需要使用多个某 store 的状态属性或 getters ，可以使用 shared helper —— 共享帮手 mapState ，它会返回一个对象 。</p>
+<p>state可以设置计算属性</p>
+<p>一条重要的原则就是要记住 mutation 必须是同步函数<br>store.commit(‘increment’)<br>// 任何由 “increment” 导致的状态变更都应该在此刻完成。</p>
+<p>store是响应式的，变化后，会触发vue组件更新</p>
+<blockquote>
+<p>组件通信</p>
+</blockquote>
+<p>refs方式：parent.$refs.list.<method><br>customer event方式: 先dispatch给父组件，再由父组件broadcast给子组件(vue1.x)<br>event bus 使用一个空的vue对象，作为全局的事件中心<br>props方式</method></p>
+<h2 id="vue1-x-迁移-vue2-x"><a href="#vue1-x-迁移-vue2-x" class="headerlink" title="vue1.x 迁移 vue2.x"></a>vue1.x 迁移 vue2.x</h2><h2 id="vuex1-x-迁移-vuex2-x"><a href="#vuex1-x-迁移-vuex2-x" class="headerlink" title="vuex1.x 迁移 vuex2.x"></a>vuex1.x 迁移 vuex2.x</h2><ol>
+<li>mutation的触发变成了commit</li>
+<li>action可以写入到store里面</li>
+<li>mapGetter，mapAction，mapMution，帮助我们映射store,getter到本地</li>
+<li>action参数的改变，只有2个参数</li>
+</ol>
+<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><p><a href="https://segmentfault.com/a/1190000005018970" target="_blank" rel="external">vuex示例</a></p>
+
       
     </div>
 
@@ -458,7 +469,7 @@ webpack - A full-featured Webpac">
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">46</span>
+              <span class="site-state-item-count">54</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>
@@ -497,7 +508,7 @@ webpack - A full-featured Webpac">
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#vue实战"><span class="nav-number">1.</span> <span class="nav-text">vue实战</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#vue-cli"><span class="nav-number">1.1.</span> <span class="nav-text">vue-cli</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#webpack入门"><span class="nav-number">1.2.</span> <span class="nav-text">webpack入门</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#面向数据驱动"><span class="nav-number">1.</span> <span class="nav-text">面向数据驱动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vue实战"><span class="nav-number">2.</span> <span class="nav-text">vue实战</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#vue-cli"><span class="nav-number">2.1.</span> <span class="nav-text">vue-cli</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#webpack入门"><span class="nav-number">2.2.</span> <span class="nav-text">webpack入门</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vuex"><span class="nav-number">2.3.</span> <span class="nav-text">vuex</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vue1-x-迁移-vue2-x"><span class="nav-number">3.</span> <span class="nav-text">vue1.x 迁移 vue2.x</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vuex1-x-迁移-vuex2-x"><span class="nav-number">4.</span> <span class="nav-text">vuex1.x 迁移 vuex2.x</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#引用"><span class="nav-number">5.</span> <span class="nav-text">引用</span></a></li></ol></div>
             
           </div>
         </section>
