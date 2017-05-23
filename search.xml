@@ -4,6 +4,29 @@
   
     
     <entry>
+      <title><![CDATA[vue2高级能力]]></title>
+      <url>http://http://localhost:4000/2017/05/07/vue2-high-fether/</url>
+      <content type="html"><![CDATA[<h2 id="递归组件"><a href="#递归组件" class="headerlink" title="递归组件"></a>递归组件</h2><p>使用name属性, 便可在组件的template中直接使用组件本身</p>
+<figure class="highlight"><table><tr><td class="code"><pre><div class="line">&lt;template lang="html"&gt;</div><div class="line">    &lt;li&gt;</div><div class="line">        &lt;div</div><div class="line">            :class="&#123;bold: isFolder&#125;"</div><div class="line">            @click="handelClick"</div><div class="line">            v-if="model"&gt;</div><div class="line">            &#123;&#123;model.name&#125;&#125;</div><div class="line">            &lt;span v-if="isFolder"&gt;[&#123;&#123;model.open ? '-' : '+'&#125;&#125;]&lt;/span&gt;</div><div class="line">        &lt;/div&gt;</div><div class="line">        &lt;ul v-show="model.open" v-if="isFolder"&gt;</div><div class="line">            &lt;item</div><div class="line">                class="item"</div><div class="line">                v-for="item in model.children"</div><div class="line">                key="item"</div><div class="line">                :model="item"&gt;</div><div class="line">            &lt;/item&gt;</div><div class="line">            &lt;li class="add" @click="addChild"&gt;+&lt;/li&gt;</div><div class="line">        &lt;/ul&gt;</div><div class="line">    &lt;/li&gt;</div><div class="line">&lt;/template&gt;</div><div class="line">&lt;script&gt;</div><div class="line"></div><div class="line">    import utils from 'utils'</div><div class="line"></div><div class="line">    export default&#123;</div><div class="line"></div><div class="line">            name : 'item',</div><div class="line"></div><div class="line">            props: &#123;</div><div class="line">                model: Object</div><div class="line">            &#125;,</div><div class="line"></div><div class="line">            computed: &#123;</div><div class="line">                isFolder: function () &#123;</div><div class="line">                    return this.model &amp;&amp;  this.model.children &amp;&amp;</div><div class="line">                        this.model.children.length</div><div class="line">                &#125;</div><div class="line">            &#125;,</div><div class="line"></div><div class="line">            methods: &#123;</div><div class="line">                handelClick()&#123;</div><div class="line">                    if(this.isFolder) &#123;</div><div class="line">                        this.toggle();</div><div class="line">                    &#125;else&#123;</div><div class="line">                        utils.eventBus.$emit(this.model.actionName);</div><div class="line">                    &#125;</div><div class="line">                &#125;,</div><div class="line">                toggle: function () &#123;</div><div class="line">                    if (this.isFolder) &#123;</div><div class="line">                        this.open = !this.open</div><div class="line">                    &#125;</div><div class="line">                &#125;,</div><div class="line">                changeType: function () &#123;</div><div class="line">                    if (!this.isFolder) &#123;</div><div class="line">                        Vue.set(this.model, 'children', [])</div><div class="line">                        this.addChild()</div><div class="line">                        this.open = true</div><div class="line">                    &#125;</div><div class="line">                &#125;,</div><div class="line">                addChild: function () &#123;</div><div class="line">                    this.model.children.push(&#123;</div><div class="line">                        name: 'new stuff'</div><div class="line">                    &#125;)</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">    &#125;</div><div class="line">&lt;/script&gt;</div><div class="line"></div><div class="line">&lt;style rel="stylesheet/less"&gt;</div><div class="line">    .item &#123;</div><div class="line">        cursor: pointer;</div><div class="line">    &#125;</div><div class="line">    .bold &#123;</div><div class="line">        font-weight: bold;</div><div class="line">    &#125;</div><div class="line">&lt;/style&gt;</div></pre></td></tr></table></figure>
+<h2 id="动态切换component"><a href="#动态切换component" class="headerlink" title="动态切换component"></a>动态切换component</h2><p>当我们需要动态切换组件的时候，可以使用内置的component标签，不必写冗余的if else，但是要注意的是，动态切换默认会重新渲染组件，在某些比较费时的组件又需要频繁切换的时候，可以用keep-alive标签使其保持在内存。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">&lt;component v-<span class="keyword">for</span>=<span class="string">"(layer,index) in curScene.layers"</span> :key=<span class="string">"layer.id"</span> :is=<span class="string">"layer.type"</span> source=<span class="string">"scenebox"</span> :layer=<span class="string">"layer"</span> :index=<span class="string">"index"</span> :layers=<span class="string">"curScene.layers"</span>&gt;&lt;/component&gt;</div><div class="line"></div><div class="line"><span class="comment">// 保持组件在内存，不会重新初始化</span></div><div class="line">&lt;keep-alive&gt;</div><div class="line">    &lt;component v-for="(layer,index) in curScene.layers" :key="layer.id" :is="layer.type" source="scenebox" :layer="layer" :index="index" :layers="curScene.layers"&gt;&lt;/component&gt;</div><div class="line">&lt;<span class="regexp">/keep-alive&gt;</span></div></pre></td></tr></table></figure>
+<h2 id="v-for-key"><a href="#v-for-key" class="headerlink" title="v-for key"></a>v-for key</h2><p>用于强制替换元素/组件而不是重复使用它<br>key 是唯一id，不能重复，否则会报致命错误<br>如果不使用key，Vue会使用一种最大限度减少动态元素并且尽可能的尝试修复/再利用相同类型元素的算法。使用key，它会基于key的变化重新排列元素顺序，并且会移除key不存在的元素。</p>
+<p>有子组件的时候，需要加上key</p>
+<h2 id="调整数组顺序"><a href="#调整数组顺序" class="headerlink" title="调整数组顺序"></a>调整数组顺序</h2><p>可以使用splice变异方法<br><code>layers.splice.apply(layers, [toIndex, 0].concat(moved = layers.splice(fromIndex, howMany)) )</code></p>
+<h2 id="v-for-和-v-if-需要同时使用时"><a href="#v-for-和-v-if-需要同时使用时" class="headerlink" title="v-for 和 v-if 需要同时使用时"></a>v-for 和 v-if 需要同时使用时</h2><p>使用<template></template>标签替换<br><figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">&lt;template  v-for=&quot;page in pages&quot; &gt;</div><div class="line">		&lt;tr class=&quot;item&quot; v-if=&quot;!page.global&quot; :key=&quot;page.id&quot;&gt;</div><div class="line">			&lt;td&gt;&lt;img :src=&quot;page.global.sceneImgs[0] + &apos;?key=&apos; + randomKey&quot; class=&quot;page-thumb&quot;</div><div class="line">					 v-if=&quot;page.global.sceneImgs &amp;&amp; page.global.sceneImgs[0]&quot; style=&quot;height:100%;&quot; alt=&quot;&quot;&gt;&lt;/td&gt;</div><div class="line">			&lt;td&gt;&#123;&#123; page.title &#125;&#125;&lt;/td&gt;&lt;Paste&gt;</div></pre></td></tr></table></figure></p>
+<h2 id="动态引入组件"><a href="#动态引入组件" class="headerlink" title="动态引入组件"></a>动态引入组件</h2><h2 id="vuex"><a href="#vuex" class="headerlink" title="vuex"></a>vuex</h2><blockquote>
+<p>vuex于eventBus的区别<br>vuex = gutters + actions + mutations<br>状态管理器，vuex = 全局事件中心 + 全局变量<br>eventBus = 全局事件中心<br>所以vuex更加强大, </p>
+</blockquote>
+<p>只是简单的父子组件通信，使用$emit，$on<br>稍微复杂的跨组件通信使用eventBus<br>非常复杂的跨组件通信，以及状态切换使用vuex</p>
+<blockquote>
+<p>心得<br>推荐所有的状态变化都通过mutations来改变。如果1个操作很复杂，或者是公用的，则可提取到action中，action中可以再访问action，或者提交多个commit，以及异步操作。<br>mutations中的方法，应该尽可能的抽象, 满足尽可能多的情况。<br>payload应该使用对象，拥有更好的扩展性。</p>
+</blockquote>
+]]></content>
+      
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[坑-动态插入script不执行]]></title>
       <url>http://http://localhost:4000/2017/03/21/dynamic-insert-script-not-excute/</url>
       <content type="html"><![CDATA[<p>innerHTML 只能插入dom，插入script标签不会执行，用标准dom创建scrip标签可以执行</p>
@@ -230,7 +253,14 @@
     <entry>
       <title><![CDATA[vue是什么]]></title>
       <url>http://http://localhost:4000/2017/02/13/what-is-vue/</url>
-      <content type="html"><![CDATA[<h2 id="面向数据驱动"><a href="#面向数据驱动" class="headerlink" title="面向数据驱动"></a>面向数据驱动</h2><p>这一点，虽然看着很好理解，但在实际开发过程中，不一定能把握住精髓。我们被jQuery等dom操作的库洗脑太深了，不自觉的会往dom操作上面去想，其实vue已经做了dom操作的封装，我们真正关心的是<strong>数据的变化</strong>，一切状态的改变，ui的改变都应该是数据的变化，我们focus在数据这个点上，dom操作交给vue去处理就好。</p>
+      <content type="html"><![CDATA[<p><img src="http://o99eh3ii0.bkt.clouddn.com/17-4-22/43478794-file_1492820528872_bccd.png" alt="pic alt" title="opt title"></p>
+<p>vue是前端渲染库的新宠，它只关注于view层，与传统的展现于数据分离，展现于操作分离不同。 vue推荐将操作直接绑定到视图，显得更加直观。以数据驱动的思想进行开发，将dom同步工作交给vue，开发者只需要关注数据和状态的变化，以及需要的操作。</p>
+<h2 id="面向数据驱动"><a href="#面向数据驱动" class="headerlink" title="面向数据驱动"></a>面向数据驱动</h2><p>这一点，虽然看着很好理解，但在实际开发过程中，不一定能把握住精髓。我们被jQuery等dom操作的库洗脑太深了，不自觉的会往dom操作上面去想，其实vue已经做了dom操作的封装，我们真正关心的是<strong>数据的变化</strong>，一切状态的改变，ui的改变都应该是数据的变化，我们focus在数据这个点上，dom操作交给vue去处理就好, 当以这种思维去开发时，会发现以前很复杂的问题抽象到数据上来看，变得清爽，简洁了很多，一目了然。对于维护大型前端软件来说，正好切中了痛点。</p>
+<h2 id="陌生中的熟悉"><a href="#陌生中的熟悉" class="headerlink" title="陌生中的熟悉"></a>陌生中的熟悉</h2><p>我们在写vue的时候是不是觉得有些写法很眼熟，对了，就是我们用了很久的模板引擎。当初的模板引擎概念局限在了模板渲染上，如今大行其道的MVVM，正是吸收了数据驱动的思想精华后的产物。它不光拥有模板引擎所有的能力，还升级了它在模块化，响应式watcher等能力。所以我们对如今纷繁的前端渲染库也不必感到那么惊慌，它们其实也是从我们熟悉的技术中演变进化而来的，MVVM就可以理解为结合了诸多前端前沿技术概念的升级版模板引擎。它就是一个增强版的view层，隐藏了dom操作，浓缩了业务逻辑到视图， 响应式通信。一切都围绕着数据驱动，让前端开发更抽象，更工程，更合理。解放了开发者的生产力。</p>
+<h2 id="响应式watcher"><a href="#响应式watcher" class="headerlink" title="响应式watcher"></a>响应式watcher</h2><p>脏检查</p>
+<p>es5 geter/serter</p>
+<h2 id="组件通信"><a href="#组件通信" class="headerlink" title="组件通信"></a>组件通信</h2><p>refs方式：parent.$refs.list.<method><br>customer event方式: 先dispatch给父组件，再由父组件broadcast给子组件(vue1.x)<br>event bus 使用一个空的vue对象，作为全局的事件中心<br>props方式</method></p>
+<h2 id="编译版本"><a href="#编译版本" class="headerlink" title="编译版本"></a>编译版本</h2><p>runtime</p>
 <h2 id="vue实战"><a href="#vue实战" class="headerlink" title="vue实战"></a>vue实战</h2><h3 id="vue-cli"><a href="#vue-cli" class="headerlink" title="vue-cli"></a>vue-cli</h3><p>vue-cli 是vue project 的<strong>手脚架工具</strong>，官方用webpack/browserfy, 可以自定义模板, 包括eslint  karma 等完整技术栈</p>
 <blockquote>
 <p>Useage</p>
@@ -278,10 +308,6 @@
 <p>state可以设置计算属性</p>
 <p>一条重要的原则就是要记住 mutation 必须是同步函数<br>store.commit(‘increment’)<br>// 任何由 “increment” 导致的状态变更都应该在此刻完成。</p>
 <p>store是响应式的，变化后，会触发vue组件更新</p>
-<blockquote>
-<p>组件通信</p>
-</blockquote>
-<p>refs方式：parent.$refs.list.<method><br>customer event方式: 先dispatch给父组件，再由父组件broadcast给子组件(vue1.x)<br>event bus 使用一个空的vue对象，作为全局的事件中心<br>props方式</method></p>
 <h2 id="vue1-x-迁移-vue2-x"><a href="#vue1-x-迁移-vue2-x" class="headerlink" title="vue1.x 迁移 vue2.x"></a>vue1.x 迁移 vue2.x</h2><h2 id="vuex1-x-迁移-vuex2-x"><a href="#vuex1-x-迁移-vuex2-x" class="headerlink" title="vuex1.x 迁移 vuex2.x"></a>vuex1.x 迁移 vuex2.x</h2><ol>
 <li>mutation的触发变成了commit</li>
 <li>action可以写入到store里面</li>
