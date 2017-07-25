@@ -4,17 +4,192 @@
   
     
     <entry>
+      <title><![CDATA[es6-模板字符串]]></title>
+      <url>http://http://localhost:4000/2017/07/21/es6-template-string/</url>
+      <content type="html"><![CDATA[<p>es6新增了模板字符串，增强了字符串变量的能力。</p>
+<h2 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h2><p>模板字符串支持多行字符串，变量插值，以及函数标签。在模版字符串内使用反引号（`）时，需要在它前面加转义符（\）</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="keyword">let</span> str = <span class="string">`string text`</span></div><div class="line"></div><div class="line"><span class="keyword">let</span> str = <span class="string">`string text line 1</span></div><div class="line">           string text line 2 `</div><div class="line"></div><div class="line"><span class="keyword">let</span> str = <span class="string">`string text <span class="subst">$&#123;expression&#125;</span> string text`</span></div><div class="line"></div><div class="line"><span class="keyword">let</span> str = tag <span class="string">`string text <span class="subst">$&#123;expression&#125;</span> string text`</span></div></pre></td></tr></table></figure>
+<p> 在${ } 内，支持任意的js表达式  </p>
+<h2 id="标签函数"><a href="#标签函数" class="headerlink" title="标签函数"></a>标签函数</h2><p>标签函数可以理解为一个过滤器，filter 对模板字符串的输出做<strong>进一步过滤</strong>。<br><strong>返回值也不一定是一个字符串</strong>，可以是个函数或者别的类型</p>
+<p>参数：</p>
+<ul>
+<li>strings [] 字符串的字面值数组，按照 ${} 符号分割，在下面的例子中，分别为 Hello 、world</li>
+<li>$1 “”  对应每一个处理好的插值计算结果</li>
+<li>$2  “”</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="keyword">var</span> a = <span class="number">5</span>;</div><div class="line"><span class="keyword">var</span> b = <span class="number">10</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">tag</span>(<span class="params">strings, ...values</span>) </span>&#123;</div><div class="line">  <span class="built_in">console</span>.log(strings[<span class="number">0</span>]); <span class="comment">// "Hello "</span></div><div class="line">  <span class="built_in">console</span>.log(strings[<span class="number">1</span>]); <span class="comment">// " world "</span></div><div class="line">  <span class="built_in">console</span>.log(strings[<span class="number">2</span>]); <span class="comment">// ""</span></div><div class="line">  <span class="built_in">console</span>.log(values[<span class="number">0</span>]);  <span class="comment">// 15</span></div><div class="line">  <span class="built_in">console</span>.log(values[<span class="number">1</span>]);  <span class="comment">// 50</span></div><div class="line"></div><div class="line">  <span class="keyword">return</span> <span class="string">"Bazinga!"</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">let</span> str = tag<span class="string">`Hello <span class="subst">$&#123; a + b &#125;</span> world <span class="subst">$&#123; a * b&#125;</span>`</span>;</div><div class="line"><span class="comment">// "Bazinga!"</span></div></pre></td></tr></table></figure>
+<blockquote>
+<p>原始字符串</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">tag</span>(<span class="params">strings, ...values</span>) </span>&#123;</div><div class="line">  <span class="built_in">console</span>.log(strings.raw[<span class="number">0</span>]); </div><div class="line">  <span class="comment">// "string text line 1 \\n string text line 2"</span></div><div class="line">&#125;</div><div class="line"></div><div class="line">tag<span class="string">`string text line 1 \n string text line 2`</span>;</div></pre></td></tr></table></figure>
+<p>在标签函数的第一个参数中，存在一个特殊的属性raw ，我们可以通过它来访问模板字符串的原始字符串。</p>
+<h2 id="标签函数的应用"><a href="#标签函数的应用" class="headerlink" title="标签函数的应用"></a>标签函数的应用</h2><blockquote>
+<p>利用标签函数来实现模板引擎</p>
+<p>过滤掉多行字符串中的空格</p>
+</blockquote>
+]]></content>
+      
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[文件上传]]></title>
+      <url>http://http://localhost:4000/2017/07/12/fileupload/</url>
+      <content type="html"><![CDATA[<p>最近碰到了文件上传的需求，突然发现这个需求其实很常用，包括我的博客如何上传的图片等。我也希望自己写一个图床。</p>
+<p>要做好文件上传，其实也并不容易</p>
+<h2 id="form表单"><a href="#form表单" class="headerlink" title="form表单"></a>form表单</h2><figure class="highlight html"><table><tr><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">"http://baidu.com"</span> <span class="attr">target</span>=<span class="string">""</span> <span class="attr">id</span>=<span class="string">"uploadForm"</span> <span class="attr">enctype</span>=<span class="string">"multipart/form-data"</span>&gt;</span></div><div class="line">　　<span class="tag">&lt;<span class="name">input</span> <span class="attr">id</span>=<span class="string">"file"</span> <span class="attr">type</span>=<span class="string">"file"</span> <span class="attr">name</span>=<span class="string">"file"</span>/&gt;</span></div><div class="line">　　<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"submit"</span> <span class="attr">name</span>=<span class="string">"submit"</span> <span class="attr">id</span>=<span class="string">"submit"</span> <span class="attr">value</span>=<span class="string">"upload"</span> /&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></div></pre></td></tr></table></figure>
+<p><strong>enctype 指明了表单数据在上传之前进行的编码方式</strong></p>
+<table>
+<thead>
+<tr>
+<th>name</th>
+<th style="text-align:left">describe</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>application/x-www-form-urlencoded</td>
+<td style="text-align:left">在发送前urlencode编码所有字符（默认）, key,vlaue对</td>
+</tr>
+<tr>
+<td>multipart/form-data</td>
+<td style="text-align:left">不对字符编码。 在使用包含文件上传控件的表单时，必须使用该值。</td>
+</tr>
+<tr>
+<td>text/plain</td>
+<td style="text-align:left">空格转换为 “+” 加号，但不对特殊字符编码。</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p>application/x-www-form-urlencoded<br>  使用get方式提交时，把表单数据(name1=value1&amp;name2=value2…)以键值对append到url后，用  ‘?’ 分割url和参数。使用post方式提交时，把表单数据以键值对放在请求体中传输。              </p>
+</li>
+<li><p>multipart/form-data<br>  表单数据被编码为一条消息，页上的每个input对应消息中的一个部分<br>  用boundary=—————————36243265420146”分割各个部分（boundary值由浏览器生成）。它不会对字符进行编码，一般用于传输二进制文件（图片、视频、、、）  </p>
+</li>
+</ul>
+<blockquote>
+<p>form表单的缺点</p>
+</blockquote>
+<ol>
+<li>会刷新页面，跳转到action的地址</li>
+<li>不够灵活，比如取消啊，,预览啊，或者别的验证，或者多文件上传之类的都不好做。</li>
+</ol>
+<h2 id="HTML5之FormData、FileReader"><a href="#HTML5之FormData、FileReader" class="headerlink" title="HTML5之FormData、FileReader"></a>HTML5之FormData、FileReader</h2><p>html5有个新的js对象，FormData可以用来模拟表单数据, 然后通过<a href="https://developer.mozilla.org/en-US/docs/Web/API/FormData#append" target="_blank" rel="external">ajax上传文件</a>.</p>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/API/FormData#append" target="_blank" rel="external">FormData API</a></li>
+<li>FormData 对象可以通过form，dom元素构造，也可以通过new FormData(), 然后append键值对</li>
+<li>FormData 对象的字段类型可以是 Blob, File, 或者 string: 如果它的字段类型不是Blob也不是File，则会被转换成字符串类型。</li>
+<li>FormData 的字段属性不能<strong>直接删除</strong>，需要调用FormData.delete,不过目前兼容性不好</li>
+</ul>
+<p>下面是一个通过表单，利用ajax上传的例子。</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">enctype</span>=<span class="string">"multipart/form-data"</span> <span class="attr">method</span>=<span class="string">"post"</span> <span class="attr">name</span>=<span class="string">"fileinfo"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">label</span>&gt;</span>Your email address:<span class="tag">&lt;/<span class="name">label</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"email"</span> <span class="attr">autocomplete</span>=<span class="string">"on"</span> <span class="attr">autofocus</span> <span class="attr">name</span>=<span class="string">"userid"</span> <span class="attr">placeholder</span>=<span class="string">"email"</span> <span class="attr">required</span> <span class="attr">size</span>=<span class="string">"32"</span> <span class="attr">maxlength</span>=<span class="string">"64"</span> /&gt;</span><span class="tag">&lt;<span class="name">br</span> /&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">label</span>&gt;</span>Custom file label:<span class="tag">&lt;/<span class="name">label</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">name</span>=<span class="string">"filelabel"</span> <span class="attr">size</span>=<span class="string">"12"</span> <span class="attr">maxlength</span>=<span class="string">"32"</span> /&gt;</span><span class="tag">&lt;<span class="name">br</span> /&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">label</span>&gt;</span>File to stash:<span class="tag">&lt;/<span class="name">label</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"file"</span> <span class="attr">name</span>=<span class="string">"file"</span> <span class="attr">required</span> /&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"submit"</span> <span class="attr">value</span>=<span class="string">"Stash the file!"</span> /&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="keyword">var</span> form = <span class="built_in">document</span>.forms.namedItem(<span class="string">"fileinfo"</span>);</div><div class="line">form.addEventListener(<span class="string">'submit'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">ev</span>) </span>&#123;</div><div class="line"></div><div class="line">  <span class="keyword">var</span> oOutput = <span class="built_in">document</span>.querySelector(<span class="string">"div"</span>),</div><div class="line">      oData = <span class="keyword">new</span> FormData(form);</div><div class="line"></div><div class="line">  oData.append(<span class="string">"CustomField"</span>, <span class="string">"This is some extra data"</span>);</div><div class="line"></div><div class="line">  <span class="keyword">var</span> oReq = <span class="keyword">new</span> XMLHttpRequest();</div><div class="line">  oReq.open(<span class="string">"POST"</span>, <span class="string">"stash.php"</span>, <span class="literal">true</span>);</div><div class="line">  oReq.onload = <span class="function"><span class="keyword">function</span>(<span class="params">oEvent</span>) </span>&#123;</div><div class="line">    <span class="keyword">if</span> (oReq.status == <span class="number">200</span>) &#123;</div><div class="line">      oOutput.innerHTML = <span class="string">"Uploaded!"</span>;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">      oOutput.innerHTML = <span class="string">"Error "</span> + oReq.status + <span class="string">" occurred when trying to upload your file.&lt;br \/&gt;"</span>;</div><div class="line">    &#125;</div><div class="line">  &#125;;</div><div class="line"></div><div class="line">  oReq.send(oData);</div><div class="line">  ev.preventDefault();</div><div class="line">&#125;, <span class="literal">false</span>);</div></pre></td></tr></table></figure>
+<p>也可以不经过表单，通过input 的onchange事件拿到要上传的文件</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">form</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"file"</span> <span class="attr">id</span>=<span class="string">"webupload"</span> <span class="attr">style</span>=<span class="string">"width:170px;"</span>  <span class="attr">accept</span>=<span class="string">"image/png"</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></div></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="keyword">var</span> input = doucument.querySelector(<span class="string">'#webupload'</span>);</div><div class="line">input.onchange = <span class="function"><span class="keyword">function</span>(<span class="params">e</span>)</span>&#123;</div><div class="line">    <span class="keyword">let</span> file e.target.files[<span class="number">0</span>];</div><div class="line"></div><div class="line">    <span class="comment">// 准备formData</span></div><div class="line">    <span class="keyword">var</span> formData = <span class="keyword">new</span> FormData();</div><div class="line">    formData.append(<span class="string">'file'</span>, file);</div><div class="line"></div><div class="line">    <span class="comment">// 开始上传</span></div><div class="line">    $.ajax(&#123;</div><div class="line">        <span class="attr">url</span>: <span class="keyword">this</span>.server,</div><div class="line">        <span class="attr">type</span>: <span class="string">'POST'</span>,</div><div class="line">        <span class="attr">data</span>: formData,</div><div class="line">        <span class="attr">processData</span>: <span class="literal">false</span>, <span class="comment">// 不处理发送的数据，因为data值是Formdata对象，不需要对数据做处理</span></div><div class="line">        cache: <span class="literal">false</span>,</div><div class="line">        <span class="attr">dataType</span>: <span class="string">'json'</span>,</div><div class="line">        <span class="attr">contentType</span>: <span class="literal">false</span>, </div><div class="line">        <span class="attr">error</span>: <span class="function"><span class="keyword">function</span> (<span class="params">e</span>) </span>&#123;</div><div class="line">        &#125;,</div><div class="line">        <span class="attr">success</span>: <span class="function">(<span class="params">res</span>) =&gt;</span> &#123;</div><div class="line">        &#125;</div><div class="line">    &#125;)</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>注意如果用jquery，<strong>processData要为false</strong>，不做编码处理</p>
+<p>当二次上传的时候，input还保留了以前的value，如果选择到了同一个文件，<strong>则不会触发onchange事件</strong>，所以，在上传完毕后要清空input的value</p>
+<p>我测试直接设置input.value = ‘’ , 是不成功的。<br>另一个方案是，<strong>使用form元素的reset(),方法</strong>，会清空form里面所有input的值</p>
+</blockquote>
+<p><strong>FormData的兼容性</strong></p>
+<p>现代浏览器Android4.4以上都支持，IE10及其以上支持<br><img src="http://o99eh3ii0.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20170712084359.png" alt=""></p>
+<h2 id="FormData-上传base64图片"><a href="#FormData-上传base64图片" class="headerlink" title="FormData 上传base64图片"></a>FormData 上传base64图片</h2><p>FormData支持blob对象，所以把base64转成blob对象即可, 以下是一个转换算法示例</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="keyword">var</span> base64ToBlob =  <span class="function"><span class="keyword">function</span> (<span class="params">base64, mime</span>) </span>&#123;</div><div class="line">        mime = mime || <span class="string">''</span>;</div><div class="line">        <span class="keyword">var</span> sliceSize = <span class="number">1024</span>;</div><div class="line">        <span class="keyword">var</span> byteChars = <span class="built_in">window</span>.atob(base64);</div><div class="line">        <span class="keyword">var</span> byteArrays = [];</div><div class="line"></div><div class="line">        <span class="keyword">for</span> (<span class="keyword">var</span> offset = <span class="number">0</span>, len = byteChars.length; offset &lt; len; offset += sliceSize) &#123;</div><div class="line">            <span class="keyword">var</span> slice = byteChars.slice(offset, offset + sliceSize);</div><div class="line"></div><div class="line">            <span class="keyword">var</span> byteNumbers = <span class="keyword">new</span> <span class="built_in">Array</span>(slice.length);</div><div class="line">            <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; slice.length; i++) &#123;</div><div class="line">                byteNumbers[i] = slice.charCodeAt(i);</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="keyword">var</span> byteArray = <span class="keyword">new</span> <span class="built_in">Uint8Array</span>(byteNumbers);</div><div class="line"></div><div class="line">            byteArrays.push(byteArray);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Blob(byteArrays, &#123; <span class="attr">type</span>: mime &#125;);</div><div class="line">    &#125;,</div><div class="line"></div><div class="line"></div><div class="line">    <span class="keyword">var</span> base64ImageContent = base64String.replace(<span class="regexp">/^data:image\/(png|jpg|jpeg);base64,/</span>, <span class="string">""</span>);</div><div class="line">    <span class="keyword">var</span> blob = utils.base64ToBlob(base64ImageContent, <span class="string">'image/png'</span>);</div><div class="line">    <span class="keyword">var</span> fileOfBlob = <span class="keyword">new</span> File([blob], <span class="string">'img'</span>+ <span class="built_in">Math</span>.random() +<span class="string">'.jpg'</span>); <span class="comment">// 指定文件名</span></div><div class="line">    <span class="keyword">var</span> formData = <span class="keyword">new</span> FormData();</div><div class="line">    formData.append(<span class="string">'file'</span>, fileOfBlob);</div></pre></td></tr></table></figure>
+<blockquote>
+<p>这里转成blob对象后并没有直接放入FormData,而是又转成了file对象，目的是为了指定文件本身的文件名，当然如果对文件名没有要求的，可以忽略这一步。大部分后端会依赖文件名以及后缀，做一些处理。</p>
+</blockquote>
+<h2 id="flash"><a href="#flash" class="headerlink" title="flash"></a>flash</h2><p>flash 虽然可以实现以上的所有能力，但它终将死亡，这里就不再叙述了。能用到flash的一般都是为了兼容老的浏览器。<br>希望web生态越来好，紧跟标准。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>其实文件上传，FormData是属于xhr的level2的新特性之一，可以关注一下底层规范。<br>原生js的能力已经越来越强大了，很多新能力已经能在实际生产中使用了，我们要学道，而不是术，底层原理是基础,关注规范。</p>
+]]></content>
+      
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[同步你的window和mac工作环境]]></title>
+      <url>http://http://localhost:4000/2017/07/01/window-mac-working-sync/</url>
+      <content type="html"><![CDATA[<p>我公司的电脑是mac，家里的电脑是windows，有时候不想带电脑回家，或者不想放着家里台式机强悍的性能浪费。还有我那快生灰的信仰键盘，hhkb。。。 所以我幻想着有一天能够什么都不带，<strong>在任何平台</strong>都可以开始我的工作。。</p>
+<p>然而现实总是很残酷的。除了文件同步这个关键功能外，还有各个平台的差异性，如何统一，也是非常麻烦的。比如按键，比如开发工具，比如平台的生态环境等等。<br>所以我的需求总结起来也就是如下：</p>
+<ol>
+<li>文件同步</li>
+<li>开发工具统一</li>
+<li>按键统一</li>
+</ol>
+<h2 id="文件同步"><a href="#文件同步" class="headerlink" title="文件同步"></a>文件同步</h2><p>其实比较好的方式，是用<strong>云同步盘</strong>，自动同步window和mac端的文件，可惜金山快盘倒了以后就没有比较好的跨平台同步盘了。 别的软件，比如百度同步盘，坚果等，在不同平台表现差异比较大，还出现过文件丢失的情况。</p>
+<p>无奈之下只好使用git了,我们需要同步的东西，大多数是项目工程，或者配置文件等等。所以拆分成git项目，其实也是有助于我们的管理的。避免出现同步很大，很杂的东西，毕竟不是网盘。</p>
+<p>放在git上，也有个问题，那就是安全性了。有些东西不好放在外面，隐私性要求高，同时能也不喜欢GitHub的高额收费。。。所以这里我选择了gitlab，<strong>可以无限制的创建私有项目</strong>，体验也与github差不多，如果哪一天想开源了，就转到GitHub上就行。</p>
+<p>所以每天开发完毕要记得同步git。</p>
+<h2 id="开发工具"><a href="#开发工具" class="headerlink" title="开发工具"></a>开发工具</h2><p>我认为开发工具应该有2个，一个是小巧的文本编辑器，一个是强大的ide, 各司其职。<br>我选择了<strong>vscode和webstorm</strong>，这2个工具都是跨平台的，对前端开发很友好。</p>
+<blockquote>
+<p>配置同步</p>
+</blockquote>
+<p> webstorm依然可以借助git，导出setting.jar<br> vscode可以使用sync的插件，利用GitHub的gist，它其实本质上是一个简化的git仓库。<br> 要注意的是这个功能需要2个秘钥，一个是GitHub生产的，用于上传，一个是gist生产的，用于下载, <strong>这2个秘钥都要记得保存，它只能看1次</strong>。<br> sync这个插件还有一个能力，是区分平台配置，比如在mac和windows上的按键配置会自动区分，并保存，linux上会不会再区分一个，这个没试过。 详情使用可以看sync的插件说明</p>
+<blockquote>
+<p>shell</p>
+</blockquote>
+<p> 还有一项必不可少的工具就是shell了。<br> 开发者当然是离不开shell的了，如果你能，那当我没说。。。。<br> mac上的终端工具很多，windows就比较麻烦了, 自带的cmd惨不忍睹，powershell也不支持bash的命令。<strong>解决方案是安装git bash</strong>，选择<strong>嵌入比较深</strong>的那个解决方案，这样在cmd，和powershell里面也可以使用一些常用的shell命令了。</p>
+<p> 好在vscode和webstorm都支持内嵌终端模拟器，可以选择自定义shell, 在windows上推荐用powershell，比cmd和git bash 自带的模拟环境干净不少。</p>
+<blockquote>
+<p>cros-env</p>
+</blockquote>
+<p>还有个问题是，在windows上不支持带环境变量的shell命令，比如   NODE_ENV=dev npm run dev , 会认为是非法命令。<br>解决方法是安装一个叫cors-env的一个npm包，在执行的命令前面加上cros就行了。</p>
+<h2 id="按键统一"><a href="#按键统一" class="headerlink" title="按键统一"></a>按键统一</h2><p>习惯了mac的按键，windows的按键极不顺手，特别是对于键盘党来说。 这里使用autokey这个软件，在windows上模拟mac的按键。 献上<a href="https://autohotkey.com/docs/Tutorial.htm" target="_blank" rel="external">官方文档</a></p>
+<p>autokey这个软件挺强的，也不需要重新启动，只要运行脚本就好了，不想用了或者想换一个，就把程序关掉就好了。</p>
+<p>一个比较坑的点是，某些绑定在cmd上的系统快捷会与软件的冲突，软件没法使用了,解决方案是使用 autokey 映射cmd + x 到别的已经有的按键绑定，其实本质的按键绑定没有改变<br>比如 cmd + i  映射到 ctrl + `  autokey key还可以使用send 语法发送按键信息，给软件</p>
+<p>这是我写好的脚本，基本实现一致的编程体验， 欢迎自取修改<br><a href="https://github.com/Alan110/autokey-mac" target="_blank" rel="external">autokey脚本</a></p>
+<p>好了，可以愉快的写代码了，have  fun ！！</p>
+]]></content>
+      
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[nodejs中的路径]]></title>
+      <url>http://http://localhost:4000/2017/06/18/nodejs-path/</url>
+      <content type="html"><![CDATA[<h2 id="path-join-和-path-resolve"><a href="#path-join-和-path-resolve" class="headerlink" title="path.join 和 path.resolve"></a>path.join 和 path.resolve</h2><p><code>path.join</code>    是组合给予的路径参数，并使用正确的系统分隔符<br><code>path.resolve</code> 是合并给予的路径参数，并返回绝对路径</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line"></div><div class="line">path.join(&apos;/a&apos;, &apos;/b&apos;, &apos;c&apos;)      // /a/b/c</div><div class="line"></div><div class="line"></div><div class="line">path.resolve(&apos;/a&apos;, &apos;/b&apos;, &apos;c&apos;)   // /b/c</div></pre></td></tr></table></figure>
+<p>所以什么时候应该用哪个，一个比较直观的区别点在于你期望’/‘ 的行为，如果你期望’/‘表现为路径相加，就用path.join , 如果你期望’/‘表现为root路径，则使用path.resolve</p>
+]]></content>
+      
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[github/gitlab web-hook]]></title>
+      <url>http://http://localhost:4000/2017/06/16/webhook/</url>
+      <content type="html"><![CDATA[<p>日常开发场景中，我们可能需要频繁的去线上机器拉取最新git代码，比较繁琐。这些工作可以交给webhook来做。<br>github、gitlab都是支持webhook功能的<br>webhook的意思，就是当我们的仓库发生提交操作时，github、gitlab会往我们预先配置好的地址发送一个请求。从请求中我们可以拿到相应的提交信息，然后判定执行什么操作，比如git pull 或者编译等操作,可以写成shell脚本。<br>所以，我们需要在线上服务器上部署一个监听server，php，nodejs，python等都可以。</p>
+<h2 id="webhook-server"><a href="#webhook-server" class="headerlink" title="webhook server"></a>webhook server</h2><p>我用的nodejs，所以找了一个nodejs的webhook模块。这里要注意一下，<strong>gitlab和github是不一样的，所以需要找相应的三方模块</strong>，别弄错了。</p>
+<blockquote>
+<p>(gitlab-webhook-handler)[<a href="https://github.com/Flying-Ape/gitlab-webhook-handler" target="_blank" rel="external">https://github.com/Flying-Ape/gitlab-webhook-handler</a>]</p>
+</blockquote>
+<p>基础代码如readme说明</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="keyword">var</span> http = <span class="built_in">require</span>(<span class="string">'http'</span>)</div><div class="line"><span class="keyword">var</span> createHandler = <span class="built_in">require</span>(<span class="string">'gitlab-webhook-handler'</span>)</div><div class="line"><span class="keyword">var</span> handler = createHandler(&#123; <span class="attr">path</span>: <span class="string">'/webhook'</span> &#125;)</div><div class="line"></div><div class="line">http.createServer(<span class="function"><span class="keyword">function</span> (<span class="params">req, res</span>) </span>&#123;</div><div class="line">  handler(req, res, <span class="function"><span class="keyword">function</span> (<span class="params">err</span>) </span>&#123;</div><div class="line">    res.statusCode = <span class="number">404</span></div><div class="line">    res.end(<span class="string">'no such location'</span>)</div><div class="line">  &#125;)</div><div class="line">&#125;).listen(<span class="number">7777</span>)</div><div class="line"></div><div class="line"><span class="built_in">console</span>.log(<span class="string">"Gitlab Hook Server running at http://0.0.0.0:7777/webhook"</span>);</div><div class="line"></div><div class="line">handler.on(<span class="string">'error'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">err</span>) </span>&#123;</div><div class="line">  	<span class="built_in">console</span>.error(<span class="string">'Error:'</span>, err.message)</div><div class="line">&#125;)</div><div class="line"></div><div class="line">handler.on(<span class="string">'push'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">event</span>) </span>&#123;</div><div class="line">  	<span class="built_in">console</span>.log(<span class="string">'Received a push event for %s to %s'</span>,</div><div class="line">    event.payload.repository.name,</div><div class="line">    event.payload.ref)</div><div class="line">&#125;)</div><div class="line"></div><div class="line">handler.on(<span class="string">'issues'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">event</span>) </span>&#123;</div><div class="line">  	<span class="built_in">console</span>.log(<span class="string">'Received an issue event for %s action=%s: #%d %s'</span>,</div><div class="line">    event.payload.repository.name,</div><div class="line">    event.payload.action,</div><div class="line">    event.payload.issue.number,</div><div class="line">    event.payload.issue.title)</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<p>注意path参数，为访问路径，在gitlab上面配置webhook信息，配置发送请求的目标地址 ip + path</p>
+<p>可以点击下面的test，进行测试。</p>
+<h2 id="处理"><a href="#处理" class="headerlink" title="处理"></a>处理</h2><p>在拿到的提交信息中，我们可以自己过滤执行不同的操作。比如是哪个分支，提交人是谁等等</p>
+]]></content>
+      
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[vue2高级能力]]></title>
       <url>http://http://localhost:4000/2017/05/07/vue2-high-fether/</url>
       <content type="html"><![CDATA[<h2 id="递归组件"><a href="#递归组件" class="headerlink" title="递归组件"></a>递归组件</h2><p>使用name属性, 便可在组件的template中直接使用组件本身</p>
 <figure class="highlight"><table><tr><td class="code"><pre><div class="line">&lt;template lang="html"&gt;</div><div class="line">    &lt;li&gt;</div><div class="line">        &lt;div</div><div class="line">            :class="&#123;bold: isFolder&#125;"</div><div class="line">            @click="handelClick"</div><div class="line">            v-if="model"&gt;</div><div class="line">            &#123;&#123;model.name&#125;&#125;</div><div class="line">            &lt;span v-if="isFolder"&gt;[&#123;&#123;model.open ? '-' : '+'&#125;&#125;]&lt;/span&gt;</div><div class="line">        &lt;/div&gt;</div><div class="line">        &lt;ul v-show="model.open" v-if="isFolder"&gt;</div><div class="line">            &lt;item</div><div class="line">                class="item"</div><div class="line">                v-for="item in model.children"</div><div class="line">                key="item"</div><div class="line">                :model="item"&gt;</div><div class="line">            &lt;/item&gt;</div><div class="line">            &lt;li class="add" @click="addChild"&gt;+&lt;/li&gt;</div><div class="line">        &lt;/ul&gt;</div><div class="line">    &lt;/li&gt;</div><div class="line">&lt;/template&gt;</div><div class="line">&lt;script&gt;</div><div class="line"></div><div class="line">    import utils from 'utils'</div><div class="line"></div><div class="line">    export default&#123;</div><div class="line"></div><div class="line">            name : 'item',</div><div class="line"></div><div class="line">            props: &#123;</div><div class="line">                model: Object</div><div class="line">            &#125;,</div><div class="line"></div><div class="line">            computed: &#123;</div><div class="line">                isFolder: function () &#123;</div><div class="line">                    return this.model &amp;&amp;  this.model.children &amp;&amp;</div><div class="line">                        this.model.children.length</div><div class="line">                &#125;</div><div class="line">            &#125;,</div><div class="line"></div><div class="line">            methods: &#123;</div><div class="line">                handelClick()&#123;</div><div class="line">                    if(this.isFolder) &#123;</div><div class="line">                        this.toggle();</div><div class="line">                    &#125;else&#123;</div><div class="line">                        utils.eventBus.$emit(this.model.actionName);</div><div class="line">                    &#125;</div><div class="line">                &#125;,</div><div class="line">                toggle: function () &#123;</div><div class="line">                    if (this.isFolder) &#123;</div><div class="line">                        this.open = !this.open</div><div class="line">                    &#125;</div><div class="line">                &#125;,</div><div class="line">                changeType: function () &#123;</div><div class="line">                    if (!this.isFolder) &#123;</div><div class="line">                        Vue.set(this.model, 'children', [])</div><div class="line">                        this.addChild()</div><div class="line">                        this.open = true</div><div class="line">                    &#125;</div><div class="line">                &#125;,</div><div class="line">                addChild: function () &#123;</div><div class="line">                    this.model.children.push(&#123;</div><div class="line">                        name: 'new stuff'</div><div class="line">                    &#125;)</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">    &#125;</div><div class="line">&lt;/script&gt;</div><div class="line"></div><div class="line">&lt;style rel="stylesheet/less"&gt;</div><div class="line">    .item &#123;</div><div class="line">        cursor: pointer;</div><div class="line">    &#125;</div><div class="line">    .bold &#123;</div><div class="line">        font-weight: bold;</div><div class="line">    &#125;</div><div class="line">&lt;/style&gt;</div></pre></td></tr></table></figure>
 <h2 id="动态切换component"><a href="#动态切换component" class="headerlink" title="动态切换component"></a>动态切换component</h2><p>当我们需要动态切换组件的时候，可以使用内置的component标签，不必写冗余的if else，但是要注意的是，动态切换默认会重新渲染组件，在某些比较费时的组件又需要频繁切换的时候，可以用keep-alive标签使其保持在内存。</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">&lt;component v-<span class="keyword">for</span>=<span class="string">"(layer,index) in curScene.layers"</span> :key=<span class="string">"layer.id"</span> :is=<span class="string">"layer.type"</span> source=<span class="string">"scenebox"</span> :layer=<span class="string">"layer"</span> :index=<span class="string">"index"</span> :layers=<span class="string">"curScene.layers"</span>&gt;&lt;/component&gt;</div><div class="line"></div><div class="line"><span class="comment">// 保持组件在内存，不会重新初始化</span></div><div class="line">&lt;keep-alive&gt;</div><div class="line">    &lt;component v-for="(layer,index) in curScene.layers" :key="layer.id" :is="layer.type" source="scenebox" :layer="layer" :index="index" :layers="curScene.layers"&gt;&lt;/component&gt;</div><div class="line">&lt;<span class="regexp">/keep-alive&gt;</span></div></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">&lt;component v-<span class="keyword">for</span>=<span class="string">"(layer,index) in curScene.layers"</span> :key=<span class="string">"layer.id"</span> :is=<span class="string">"layer.type"</span> source=<span class="string">"scenebox"</span> :layer=<span class="string">"layer"</span> :index=<span class="string">"index"</span> :layers=<span class="string">"curScene.layers"</span>&gt;<span class="xml"><span class="tag">&lt;/<span class="name">component</span>&gt;</span></span></div><div class="line"></div><div class="line"><span class="comment">// 保持组件在内存，不会重新初始化</span></div><div class="line">&lt;keep-alive&gt;</div><div class="line">    <span class="xml"><span class="tag">&lt;<span class="name">component</span> <span class="attr">v-for</span>=<span class="string">"(layer,index) in curScene.layers"</span> <span class="attr">:key</span>=<span class="string">"layer.id"</span> <span class="attr">:is</span>=<span class="string">"layer.type"</span> <span class="attr">source</span>=<span class="string">"scenebox"</span> <span class="attr">:layer</span>=<span class="string">"layer"</span> <span class="attr">:index</span>=<span class="string">"index"</span> <span class="attr">:layers</span>=<span class="string">"curScene.layers"</span>&gt;</span><span class="tag">&lt;/<span class="name">component</span>&gt;</span></span></div><div class="line">&lt;<span class="regexp">/keep-alive&gt;</span></div></pre></td></tr></table></figure>
+<h2 id="v-model-的秘密"><a href="#v-model-的秘密" class="headerlink" title="v-model 的秘密"></a>v-model 的秘密</h2><p><a href="http://www.cnblogs.com/wwlhome/p/6551165.html" target="_blank" rel="external">http://www.cnblogs.com/wwlhome/p/6551165.html</a></p>
 <h2 id="v-for-key"><a href="#v-for-key" class="headerlink" title="v-for key"></a>v-for key</h2><p>用于强制替换元素/组件而不是重复使用它<br>key 是唯一id，不能重复，否则会报致命错误<br>如果不使用key，Vue会使用一种最大限度减少动态元素并且尽可能的尝试修复/再利用相同类型元素的算法。使用key，它会基于key的变化重新排列元素顺序，并且会移除key不存在的元素。</p>
 <p>有子组件的时候，需要加上key</p>
 <h2 id="调整数组顺序"><a href="#调整数组顺序" class="headerlink" title="调整数组顺序"></a>调整数组顺序</h2><p>可以使用splice变异方法<br><code>layers.splice.apply(layers, [toIndex, 0].concat(moved = layers.splice(fromIndex, howMany)) )</code></p>
 <h2 id="v-for-和-v-if-需要同时使用时"><a href="#v-for-和-v-if-需要同时使用时" class="headerlink" title="v-for 和 v-if 需要同时使用时"></a>v-for 和 v-if 需要同时使用时</h2><p>使用<template></template>标签替换<br><figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">&lt;template  v-for=&quot;page in pages&quot; &gt;</div><div class="line">		&lt;tr class=&quot;item&quot; v-if=&quot;!page.global&quot; :key=&quot;page.id&quot;&gt;</div><div class="line">			&lt;td&gt;&lt;img :src=&quot;page.global.sceneImgs[0] + &apos;?key=&apos; + randomKey&quot; class=&quot;page-thumb&quot;</div><div class="line">					 v-if=&quot;page.global.sceneImgs &amp;&amp; page.global.sceneImgs[0]&quot; style=&quot;height:100%;&quot; alt=&quot;&quot;&gt;&lt;/td&gt;</div><div class="line">			&lt;td&gt;&#123;&#123; page.title &#125;&#125;&lt;/td&gt;&lt;Paste&gt;</div></pre></td></tr></table></figure></p>
-<h2 id="动态引入组件"><a href="#动态引入组件" class="headerlink" title="动态引入组件"></a>动态引入组件</h2><h2 id="vuex"><a href="#vuex" class="headerlink" title="vuex"></a>vuex</h2><blockquote>
+<h2 id="动态组件"><a href="#动态组件" class="headerlink" title="动态组件"></a>动态组件</h2><h2 id="指令"><a href="#指令" class="headerlink" title="指令"></a><a href="https://cn.vuejs.org/v2/guide/custom-directive.html#main" target="_blank" rel="external">指令</a></h2><p>在 Vue 中可以把一系列 复杂的操作 包装为一个指令<br>什么是复杂的操作?<br>复杂逻辑功能的包装、违背数据驱动的 DOM 操作以及对一些 Hack 手段的掩盖等。我们总是期望以操作数据的形式来实现功能逻辑。</p>
+<p>在vue的指令中是不可以双向数据绑定的，如官方所说：除了 el 之外，其它参数都应该是只读的，尽量不要修改他们。如果需要在钩子之间共享数据，建议通过元素的 dataset 来进行</p>
+<p>指令可以在钩子函数中去封装dom, 应尽可能的操作当前dom，比如在inserted的时候，当前dom插入文档时<br>如果要操作别的dom就需要等待他们插入文档，此时可以使用nextTick,vnode.context为当前的vue对象</p>
+<h3 id="拖拽示例"><a href="#拖拽示例" class="headerlink" title="拖拽示例"></a>拖拽示例</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">Vue.directive(<span class="string">'drag'</span>, &#123;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * value.target = 实际需要移动的dom元素的ref名</div><div class="line">     */</div><div class="line">    inserted: <span class="function"><span class="keyword">function</span> (<span class="params">el, binding,vnode</span>) </span>&#123;</div><div class="line">        <span class="comment">// 下一帧再获取dom元素</span></div><div class="line">        vnode.context.$nextTick(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">            <span class="comment">// 实际移动的元素</span></div><div class="line">            <span class="keyword">let</span> moveEl = <span class="keyword">this</span>.$refs[binding.value.target];</div><div class="line">            <span class="comment">// 覆盖下面有监听mousemove的元素，避免干扰</span></div><div class="line">            <span class="keyword">let</span> $mask = $(<span class="string">'&lt;div class="project-mask" style="position: absolute; top : 30px; left: 0; right:0;bottom:0; z-index: 200px; display: none;"&gt;&lt;/div&gt;'</span>).appendTo(moveEl);</div><div class="line">            el.onmousedown = <span class="function"><span class="keyword">function</span> (<span class="params">ev</span>) </span>&#123;</div><div class="line">                $mask.show();</div><div class="line">                <span class="keyword">var</span> disX = ev.clientX - moveEl.offsetLeft;</div><div class="line">                <span class="keyword">var</span> disY = ev.clientY - moveEl.offsetTop;</div><div class="line">                <span class="built_in">document</span>.body.focus();</div><div class="line">                <span class="comment">// prevent text selection in IE</span></div><div class="line">                <span class="built_in">document</span>.onselectstart = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123; <span class="keyword">return</span> <span class="literal">false</span>; &#125;;</div><div class="line">                <span class="comment">// prevent IE from trying to drag an image</span></div><div class="line">                moveEl.ondragstart = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123; <span class="keyword">return</span> <span class="literal">false</span>; &#125;;</div><div class="line"></div><div class="line">                <span class="built_in">document</span>.onmousemove = <span class="function"><span class="keyword">function</span> (<span class="params">ev</span>) </span>&#123;</div><div class="line">                    <span class="keyword">var</span> l = ev.clientX - disX;</div><div class="line">                    <span class="keyword">var</span> t = ev.clientY - disY;</div><div class="line">                    moveEl.style.left = l + <span class="string">'px'</span>;</div><div class="line">                    moveEl.style.top = t + <span class="string">'px'</span>;</div><div class="line">                &#125;;</div><div class="line">                <span class="built_in">document</span>.onmouseup = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">                    $mask.hide();</div><div class="line">                    <span class="built_in">document</span>.onmousemove = <span class="literal">null</span>;</div><div class="line">                    <span class="built_in">document</span>.onselectstart = <span class="literal">null</span>;</div><div class="line">                    moveEl.ondragstart = <span class="literal">null</span>;</div><div class="line">                    <span class="built_in">document</span>.onmouseup = <span class="literal">null</span>;</div><div class="line">                &#125;;</div><div class="line">            &#125;;</div><div class="line"></div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<h2 id="vuex"><a href="#vuex" class="headerlink" title="vuex"></a>vuex</h2><blockquote>
 <p>vuex于eventBus的区别<br>vuex = gutters + actions + mutations<br>状态管理器，vuex = 全局事件中心 + 全局变量<br>eventBus = 全局事件中心<br>所以vuex更加强大, </p>
 </blockquote>
 <p>只是简单的父子组件通信，使用$emit，$on<br>稍微复杂的跨组件通信使用eventBus<br>非常复杂的跨组件通信，以及状态切换使用vuex</p>
@@ -65,20 +240,70 @@
       <title><![CDATA[移动端响应式解决方案]]></title>
       <url>http://http://localhost:4000/2017/03/13/move-side-respones/</url>
       <content type="html"><![CDATA[<p>移动端尺寸不一，所以需要一套自适应的方案。<br>需要考虑我们的场景，有些时候，我们只需要宽度按设备尺寸伸缩，纵向上可以是固定的值<br>有时候，我们需要横向，纵向上都能按设备尺寸伸缩，例如铺满屏幕的应用。</p>
-<h2 id="viewport"><a href="#viewport" class="headerlink" title="viewport"></a>viewport</h2><h2 id="百分比"><a href="#百分比" class="headerlink" title="百分比"></a>百分比</h2><p>百分比布局只能用在横向上，比如宽度, 并且它是参照父元素的宽度。<br>高度百分比，需要html,body 等一层一层的往下写宽度，才能有参照</p>
-<p>其中有个坑就是margin，padding，它的百分比是参照的父元素的<strong>宽度</strong>。 所以用百分比布局，如果要在纵向上自适应，就相当麻烦了。</p>
-<p>有一种情况例外，那就是纯绝对定位布局，都参照最外层元素的宽高就行了。</p>
-<p>建议使用sass进行百分比换算</p>
-<h2 id="纯绝对定位"><a href="#纯绝对定位" class="headerlink" title="纯绝对定位"></a>纯绝对定位</h2><h2 id="rem"><a href="#rem" class="headerlink" title="rem"></a>rem</h2><p>既然要伸缩，就需要一个统一的参照标准，这是最好的。</p>
+<p>为什么移动端会有尺寸适配的问题</p>
+<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><blockquote>
+<p>物理像素(Device Pixels)</p>
+</blockquote>
+<p>真实物理设备上的像素点, 单位是px，但也是相对的，因为我的点可能比你的点小</p>
+<blockquote>
+<p>逻辑像素(设备独立像素)</p>
+</blockquote>
+<p>逻辑像素是一个相对的抽象概念,并不是实际的具体长度。比如css像素，它只是一个单位，具体渲染出来有多大得看设备。</p>
+<blockquote>
+<p>dpr (Device pixel ratio)</p>
+</blockquote>
+<ul>
+<li>表示每个逻辑像素（css）有几个物理像素</li>
+<li>dpr = 物理像素 / css像素</li>
+<li>window.devicePixelRatio 可以直接获取</li>
+</ul>
+<blockquote>
+<p>dpi/ppi (Dots Per Inch / Pixel Per Inch)</p>
+</blockquote>
+<ul>
+<li>像素密度，每英寸的像素点个数。</li>
+<li>Math.sqrt(750<em>750 + 1334</em>1334) / 4.7 = 326ppi // 屏幕对角线的像素尺寸 / 物理尺寸（inch）</li>
+</ul>
+<blockquote>
+<p>viewport</p>
+</blockquote>
+<ul>
+<li>视口，桌面上视口宽度等于浏览器宽度，也等于css像素，但在手机上有所不同 。 </li>
+<li>它也是一个虚拟的概念，因为手机的分辨率高，在没有缩放的情况下，手机上的视口要比屏幕宽度大得多，但它实际尺寸就是屏幕那么大，所以就只好缩小网页，将其容纳于视口之中。</li>
+<li><meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">, 所以有了这个经典的meta标签，设置视口width=device-width 。</li>
+<li>这也是为什么手机上能双指缩放</li>
+</ul>
+<h2 id="百分比"><a href="#百分比" class="headerlink" title="百分比"></a>百分比</h2><p>百分比布局只能用在横向上，比如宽度, 并且它是参照父元素的宽度。<br>高度百分比，需要html,body 等一层一层的往下写高度，才能有参照,参照的是父元素的高度</p>
+<ul>
+<li><strong>需要层层继承父元素的宽，高</strong></li>
+<li><strong>但是在高度上使用百分比，在不同机型上会有拉伸效果。比如图片，因为图片的伸缩比例和设备的比例是不同的。</strong></li>
+<li><strong>其中有个坑就是margin，padding，它的百分比是参照的父元素的宽度</strong>。 所以用百分比布局，如果要在纵向上自适应，就相当麻烦了。</li>
+</ul>
+<p>但这个特性可以用来解决<strong>已知图片比例</strong>的自适应问题。<br>因为padding是按父元素的宽度来计算百分比的，在我们知道图片比例的情况下，可以通过padding来根据宽度自适应计算出高度。</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><div class="line"><span class="selector-class">.wrap</span>&#123;</div><div class="line">    <span class="attribute">height </span>: <span class="number">0</span>;</div><div class="line">    <span class="attribute">padding-top </span>: <span class="number">75%</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="selector-class">.img</span>&#123;</div><div class="line">    <span class="attribute">position </span>: absolute;</div><div class="line">    <span class="attribute">top </span>: <span class="number">0</span>;</div><div class="line">    <span class="attribute">left </span>: <span class="number">0</span>;</div><div class="line">    <span class="attribute">width </span>: <span class="number">100%</span>;</div><div class="line">    <span class="attribute">height </span>: <span class="number">100%</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="百分比绝对定位"><a href="#百分比绝对定位" class="headerlink" title="百分比绝对定位"></a>百分比绝对定位</h2><p>不需要层层继承父元素的宽，高，只需要参照最外层的定位元素就可以了。<br>缺点就是所有元素都脱离了的文档，采用平面定位的方式来布局。</p>
+<h2 id="动态计算rem"><a href="#动态计算rem" class="headerlink" title="动态计算rem"></a>动态计算rem</h2><p>既然要伸缩，就需要一个统一的参照标准，这是最好的。</p>
 <p>在rem是参照html元素的字体大小, 可以做到所有元素有统一的参照。</p>
 <p>不过rem的布局，在缩小时不一定能完全按比例缩小。</p>
+<p>rem 默认是1rem=16px </p>
 <blockquote>
 <p>rem的换算</p>
 </blockquote>
-<p>rem 默认是1rem=16px<br>有个坑点，是手机上的分辨率高，一个物理像素点往往是几个像素点组成, 所以ue给的psd量的尺寸需要经过换算，一般参照iPhone6 设计的图，要除以2，参照iPhone6 plus的需要除3</p>
+<p>手机上的分辨率高，一个css像素点往往是几个物理像素点组成, 所以ue给的psd量的尺寸需要经过换算，</p>
+<p>iPhone6  375设备宽度   750设计稿宽度 正好是2倍<br>6s 414设备宽度 1125设计稿宽度 3倍</p>
 <p>下面是一个用js动态计算html的rem的例子</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">(<span class="function"><span class="keyword">function</span> (<span class="params">win,doc</span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> docEl = doc.documentElement,</div><div class="line">        resizeEvt = <span class="string">'orientationchange'</span> <span class="keyword">in</span> <span class="built_in">window</span> ? <span class="string">'orientationchange'</span> : <span class="string">'resize'</span>,</div><div class="line">        timer = <span class="literal">null</span>,</div><div class="line"></div><div class="line">        recalc = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">            clearTimeout(timer);</div><div class="line">            timer = setTimeout(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">                <span class="keyword">var</span> viewportWidth = docEl.getBoundingClientRect().width || docEl.clientWidth;</div><div class="line">                <span class="keyword">if</span> (!viewportWidth) <span class="keyword">return</span>;</div><div class="line"></div><div class="line">                docEl.style.fontSize = <span class="number">100</span> * (viewportWidth / <span class="number">750</span>) + <span class="string">'px'</span>;</div><div class="line">            &#125;,<span class="number">10</span>);</div><div class="line">        &#125;;</div><div class="line"></div><div class="line">    recalc();</div><div class="line"></div><div class="line">    win.addEventListener(resizeEvt, recalc, <span class="literal">false</span>);</div><div class="line">&#125;)(<span class="built_in">window</span>,<span class="built_in">document</span>) ;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line"></div><div class="line">$baseFontSize = 40px; // iphone6 下</div><div class="line"></div><div class="line">@function rem($px)&#123;</div><div class="line">  @return $px / $baseFontSize * 1rem;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">(<span class="function"><span class="keyword">function</span> <span class="title">setResponseRem</span>(<span class="params">basePx, width</span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> doc = <span class="built_in">document</span>,</div><div class="line">        win = <span class="built_in">window</span>,</div><div class="line">        docEl = doc.documentElement,</div><div class="line">        resizeEvt = <span class="string">'orientationchange'</span> <span class="keyword">in</span> <span class="built_in">window</span> ? <span class="string">'orientationchange'</span> : <span class="string">'resize'</span>,</div><div class="line">        timer = <span class="literal">null</span>,</div><div class="line"></div><div class="line">        recalc = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">            clearTimeout(timer);</div><div class="line">            timer = setTimeout(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">                <span class="keyword">var</span> viewportWidth = docEl.getBoundingClientRect().width || docEl.clientWidth;</div><div class="line">                <span class="keyword">if</span> (!viewportWidth) <span class="keyword">return</span>;</div><div class="line">                docEl.style.fontSize = basePx * (viewportWidth / width) + <span class="string">'px'</span>;</div><div class="line">            &#125;, <span class="number">10</span>);</div><div class="line">        &#125;;</div><div class="line"></div><div class="line">    recalc();</div><div class="line"></div><div class="line">    win.addEventListener(resizeEvt, recalc, <span class="literal">false</span>);</div><div class="line">&#125;)(<span class="number">100</span>,<span class="number">750</span>);</div></pre></td></tr></table></figure>
+<p> rem自适应，css=实际图的px / 100<br> basePx : 100 ,换算基准, 1rem等于多少px，这个值可以随意定，因为后续px换算rem时会除以这个值，设为100只是为了方便计算<br> width : 750 代表设计稿宽度<br> viewportWidth : 代表设备宽度，css像素<br> viewportWidth / width : 缩放比例, 其实就 1/dpr<br> fontSize : 实际的html上的字体大小</p>
+<p> 我们的换算基准是固定的，缩放的任务交给了rem</p>
+<h2 id="动态计算meta标签"><a href="#动态计算meta标签" class="headerlink" title="动态计算meta标签"></a>动态计算meta标签</h2><p><code>&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no&quot;/&gt;</code><br>从前面的viewport的知识，我们知道，viewpoint是可以进行缩放的，一般情况下，我只是把viewpoint设置成了设备的css宽度，并且没有缩放。通过rem动态计算来实现缩放。其实也可以用它来实现响应式缩放。<br>通过js计算出当前设备的dpr<br>scale = 1 / dpr<br>动态设置meta标签的scale缩放程度。</p>
+<p>rem我们也用，只不过它只是作为一个写法标准，缩放的任务是交给了meta 标签的scale属性。</p>
+<blockquote>
+<p><a href="http://www.w3cplus.com/mobile/lib-flexible-for-html5-layout.html" target="_blank" rel="external">lib-flexable</a></p>
+</blockquote>
+<p>这是淘宝沉淀的自适应方案，就是采用动态计算meta标签和rem，来做的。</p>
+<p>原理 ：</p>
+<p>和响应式方案，媒体查询有冲突</p>
+<p>只兼容了安卓</p>
 <h2 id="flexbox"><a href="#flexbox" class="headerlink" title="flexbox"></a>flexbox</h2><p>弹性布局对移动端比较友好，功能比inline-block强大，在横向上的布局，建议用flexbox<br>移动端兼容，建议使用autoprefix</p>
 <figure class="highlight css"><table><tr><td class="code"><pre><div class="line"><span class="selector-class">.f-box</span>&#123;</div><div class="line">  <span class="attribute">display</span>: flex;</div><div class="line">  <span class="attribute">flex-wrap</span>: nowrap;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="selector-class">.f-box-cld</span>&#123;</div><div class="line">  <span class="attribute">flex </span>: <span class="number">1</span>;</div><div class="line">  <span class="attribute">width</span>: <span class="number">40%</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 ]]></content>
@@ -116,7 +341,7 @@
       <url>http://http://localhost:4000/2017/03/11/webuploader-learn/</url>
       <content type="html"><![CDATA[<h2 id="简单示例"><a href="#简单示例" class="headerlink" title="简单示例"></a>简单示例</h2><figure class="highlight css"><table><tr><td class="code"><pre><div class="line"><span class="selector-class">.webuploader-container</span> &#123;</div><div class="line">    <span class="attribute">position</span>: relative;</div><div class="line">&#125;</div><div class="line"><span class="selector-class">.webuploader-element-invisible</span> &#123;</div><div class="line">    <span class="attribute">position</span>: absolute <span class="meta">!important</span>;</div><div class="line">    <span class="attribute">clip</span>: <span class="built_in">rect</span>(1px 1px 1px 1px); <span class="comment">/* IE6, IE7 */</span></div><div class="line">    <span class="attribute">clip</span>: <span class="built_in">rect</span>(1px,1px,1px,1px);</div><div class="line">&#125;</div><div class="line"><span class="selector-class">.webuploader-pick</span> &#123;</div><div class="line">    <span class="attribute">position</span>: relative;</div><div class="line">    <span class="attribute">display</span>: inline-block;</div><div class="line">    <span class="attribute">cursor</span>: pointer;</div><div class="line">    <span class="attribute">background</span>: <span class="number">#00b7ee</span>;</div><div class="line">    <span class="attribute">padding</span>: <span class="number">10px</span> <span class="number">15px</span>;</div><div class="line">    <span class="attribute">color</span>: <span class="number">#fff</span>;</div><div class="line">    <span class="attribute">text-align</span>: center;</div><div class="line">    <span class="attribute">border-radius</span>: <span class="number">3px</span>;</div><div class="line">    <span class="attribute">overflow</span>: hidden;</div><div class="line">&#125;</div><div class="line"><span class="selector-class">.webuploader-pick-hover</span> &#123;</div><div class="line">    <span class="attribute">background</span>: <span class="number">#00a2d4</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="selector-class">.webuploader-pick-disable</span> &#123;</div><div class="line">    <span class="attribute">opacity</span>: <span class="number">0.6</span>;</div><div class="line">    <span class="attribute">pointer-events</span>:none;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>这些css是预定义钩子，用来重置input的样式和一些状态下的样式，可以自己定义</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="keyword">var</span> uploader = WebUploader.create(&#123;</div><div class="line">    <span class="attr">auto</span>: <span class="literal">true</span>, <span class="comment">// 选择完毕后自动上传</span></div><div class="line">    swf: <span class="string">'path_of_swf/Uploader.swf'</span>,</div><div class="line">    <span class="attr">pick</span> :&#123;</div><div class="line">        <span class="attr">id</span>: <span class="string">'#filePicker'</span>,</div><div class="line">        <span class="attr">label</span>: <span class="string">'点击选择图片'</span></div><div class="line">    &#125;,</div><div class="line">    <span class="attr">chunked</span> : <span class="literal">true</span>, </div><div class="line">    <span class="attr">threads</span> : <span class="number">1</span>, <span class="comment">// 设置并发请求数</span></div><div class="line">    chunkSize : <span class="number">1.7</span> * <span class="number">1024</span> * <span class="number">1024</span>, <span class="comment">// 分片大小</span></div><div class="line">    server: <span class="string">'../../server/fileupload.php'</span>,</div><div class="line">    <span class="attr">accept</span> : &#123;</div><div class="line">        <span class="attr">title</span>: <span class="string">'Images'</span>,</div><div class="line">        <span class="attr">extensions</span>: <span class="string">'gif,jpg,jpeg,bmp,png'</span>,</div><div class="line">        <span class="attr">mimeTypes</span>: <span class="string">'image/*'</span>,</div><div class="line">        <span class="attr">compress</span> : <span class="literal">false</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="keyword">var</span> uploader = WebUploader.create(&#123;</div><div class="line">    <span class="attr">auto</span>: <span class="literal">true</span>, <span class="comment">// 选择完毕后自动上传</span></div><div class="line">    swf: <span class="string">'path_of_swf/Uploader.swf'</span>,</div><div class="line">    <span class="attr">pick</span> :&#123;</div><div class="line">        <span class="attr">id</span>: <span class="string">'#filePicker'</span>,</div><div class="line">        <span class="attr">label</span>: <span class="string">'点击选择图片'</span></div><div class="line">    &#125;,</div><div class="line">    <span class="attr">chunked</span> : <span class="literal">true</span>, </div><div class="line">    <span class="attr">threads</span> : <span class="number">1</span>, <span class="comment">// 设置并发请求数</span></div><div class="line">    duplicate : <span class="literal">true</span>, <span class="comment">// 默认不能上传重复的文件</span></div><div class="line">    chunkSize : <span class="number">1.7</span> * <span class="number">1024</span> * <span class="number">1024</span>, <span class="comment">// 分片大小</span></div><div class="line">    server: <span class="string">'../../server/fileupload.php'</span>,</div><div class="line">    <span class="attr">accept</span> : &#123;</div><div class="line">        <span class="attr">title</span>: <span class="string">'Images'</span>,</div><div class="line">        <span class="attr">extensions</span>: <span class="string">'gif,jpg,jpeg,bmp,png'</span>,</div><div class="line">        <span class="attr">mimeTypes</span>: <span class="string">'image/*'</span>, <span class="comment">// 改成具体的接受类型，否则会有变得延迟的问题</span></div><div class="line">        compress : <span class="literal">false</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;);</div></pre></td></tr></table></figure>
 <p><a href="http://fex.baidu.com/webuploader/doc/index.html#WebUploader_Uploader_md5File" target="_blank" rel="external">详细Api</a></p>
 <h2 id="携带自定义参数"><a href="#携带自定义参数" class="headerlink" title="携带自定义参数"></a>携带自定义参数</h2><figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 初始化的时候直接添加  </span></div><div class="line"><span class="keyword">var</span> uploader = <span class="keyword">new</span> WebUploader.Uploader(&#123;  </div><div class="line">    ...  </div><div class="line">    formData: &#123;  </div><div class="line">        <span class="attr">uid</span>: <span class="number">123</span>  </div><div class="line">    &#125;  </div><div class="line">    ...  </div><div class="line">&#125;);  </div><div class="line">  </div><div class="line"><span class="comment">// 初始化以后添加  </span></div><div class="line">uploader.options.formData.uid = <span class="number">123</span>;</div></pre></td></tr></table></figure>
 <blockquote>
@@ -144,7 +369,16 @@
     <entry>
       <title><![CDATA[webpack2.x 入门教学]]></title>
       <url>http://http://localhost:4000/2017/02/26/webpack2-x-learn/</url>
-      <content type="html"></content>
+      <content type="html"><![CDATA[<h2 id="配置解析"><a href="#配置解析" class="headerlink" title="配置解析"></a>配置解析</h2><h2 id="code-spilit"><a href="#code-spilit" class="headerlink" title="code-spilit"></a>code-spilit</h2><blockquote>
+<p>异步模块加载</p>
+</blockquote>
+<p>import</p>
+<blockquote>
+<p>commonChunks</p>
+<p>tree shaking</p>
+</blockquote>
+<h2 id="三方模块打包"><a href="#三方模块打包" class="headerlink" title="三方模块打包"></a>三方模块打包</h2><p>exports-loader<br>script-loader<br>extreal</p>
+]]></content>
       
         
     </entry>
@@ -1804,11 +2038,11 @@ C-x v a 创建gnu风格的更改日志(create changelog file in gnu-style)
 <blockquote>
 <p>mac </p>
 </blockquote>
-<p>直接安装, 注意将证书权限设置为始终信任。<br><img src="http://o99eh3ii0.bkt.clouddn.com//public/16-12-7/15128752.jpg" alt="Alt Text"> </p>
+<p>直接安装, 注意将证书权限设置为始终信任。在help面板里面，有pc端和移动端的证书快捷安装方式。<br><img src="http://o99eh3ii0.bkt.clouddn.com//public/16-12-7/15128752.jpg" alt="Alt Text"> </p>
 <blockquote>
 <p>ios</p>
 </blockquote>
-<p>ios 需要下载证书。<a href="http://www.charlesproxy.com/getssl" target="_blank" rel="external">hree</a></p>
+<p>ios 需要下载证书。<a href="http://www.charlesproxy.com/getssl" target="_blank" rel="external">hree</a>。也可以直接安装</p>
 <p><img src="http://o99eh3ii0.bkt.clouddn.com//public/16-12-7/27964601.jpg" alt="Alt Text"> </p>
 <blockquote>
 <p>设置</p>
@@ -1816,6 +2050,11 @@ C-x v a 创建gnu风格的更改日志(create changelog file in gnu-style)
 <p>设置需要代理的域名，端口为443</p>
 <p><img src="http://o99eh3ii0.bkt.clouddn.com//public/16-12-7/38781483.jpg" alt="Alt Text"> </p>
 <h2 id="手机请求代理"><a href="#手机请求代理" class="headerlink" title="手机请求代理"></a>手机请求代理</h2><p>手机和电脑需要在同一一个wifi下。<br>打开手机的网络，选择代理，自动。填写电脑的ip，和Charles的监听端口<br><img src="http://o99eh3ii0.bkt.clouddn.com//16-10-10/44283958.jpg" style="width:300px"></p>
+<h2 id="证书信任问题"><a href="#证书信任问题" class="headerlink" title="证书信任问题"></a>证书信任问题</h2><p>在高级的ios版本中，代理https可能会出现证书信任问题。 <code>Failure SSLHandshake: Received fatal alert: unknown_ca</code><br>原因是ios高版本中需要手动确认，信任的证书。<code>通用-&gt;关于本机-&gt;证书信任设置 打开才有效果</code></p>
+<h2 id="远程代理"><a href="#远程代理" class="headerlink" title="远程代理"></a>远程代理</h2><p>Charles可以将请求代理到远程链接(mapping remote)，也可以代理到本地文件(mapping local)。</p>
+<p><img src="http://o99eh3ii0.bkt.clouddn.com/FoLoz_oUlmofKFRliBLjPJRaZ8Ks" alt=""></p>
+<p>填写要代理的path，代理到的path。</p>
+<p>这里有个技巧，<strong>把完整的path拷贝填入host，然后光标移动到下面的输入框</strong>，就会自动拆解填入</p>
 ]]></content>
       
         <categories>

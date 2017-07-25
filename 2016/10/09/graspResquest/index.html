@@ -78,7 +78,8 @@ https代理在访问https的资源的时候，我们会看到请求都是unknown
 <meta property="og:image" content="http://o99eh3ii0.bkt.clouddn.com//public/16-12-7/27964601.jpg">
 <meta property="og:image" content="http://o99eh3ii0.bkt.clouddn.com//public/16-12-7/38781483.jpg">
 <meta property="og:image" content="http://o99eh3ii0.bkt.clouddn.com//16-10-10/44283958.jpg">
-<meta property="og:updated_time" content="2017-02-21T08:03:15.000Z">
+<meta property="og:image" content="http://o99eh3ii0.bkt.clouddn.com/FoLoz_oUlmofKFRliBLjPJRaZ8Ks">
+<meta property="og:updated_time" content="2017-07-25T00:20:05.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="charles抓包工具教程">
 <meta name="twitter:description" content="Charles是mac上的一款比较好用的抓包工具。
@@ -343,11 +344,11 @@ https代理在访问https的资源的时候，我们会看到请求都是unknown
 <blockquote>
 <p>mac </p>
 </blockquote>
-<p>直接安装, 注意将证书权限设置为始终信任。<br><img src="http://o99eh3ii0.bkt.clouddn.com//public/16-12-7/15128752.jpg" alt="Alt Text"> </p>
+<p>直接安装, 注意将证书权限设置为始终信任。在help面板里面，有pc端和移动端的证书快捷安装方式。<br><img src="http://o99eh3ii0.bkt.clouddn.com//public/16-12-7/15128752.jpg" alt="Alt Text"> </p>
 <blockquote>
 <p>ios</p>
 </blockquote>
-<p>ios 需要下载证书。<a href="http://www.charlesproxy.com/getssl" target="_blank" rel="external">hree</a></p>
+<p>ios 需要下载证书。<a href="http://www.charlesproxy.com/getssl" target="_blank" rel="external">hree</a>。也可以直接安装</p>
 <p><img src="http://o99eh3ii0.bkt.clouddn.com//public/16-12-7/27964601.jpg" alt="Alt Text"> </p>
 <blockquote>
 <p>设置</p>
@@ -355,6 +356,11 @@ https代理在访问https的资源的时候，我们会看到请求都是unknown
 <p>设置需要代理的域名，端口为443</p>
 <p><img src="http://o99eh3ii0.bkt.clouddn.com//public/16-12-7/38781483.jpg" alt="Alt Text"> </p>
 <h2 id="手机请求代理"><a href="#手机请求代理" class="headerlink" title="手机请求代理"></a>手机请求代理</h2><p>手机和电脑需要在同一一个wifi下。<br>打开手机的网络，选择代理，自动。填写电脑的ip，和Charles的监听端口<br><img src="http://o99eh3ii0.bkt.clouddn.com//16-10-10/44283958.jpg" style="width:300px"></p>
+<h2 id="证书信任问题"><a href="#证书信任问题" class="headerlink" title="证书信任问题"></a>证书信任问题</h2><p>在高级的ios版本中，代理https可能会出现证书信任问题。 <code>Failure SSLHandshake: Received fatal alert: unknown_ca</code><br>原因是ios高版本中需要手动确认，信任的证书。<code>通用-&gt;关于本机-&gt;证书信任设置 打开才有效果</code></p>
+<h2 id="远程代理"><a href="#远程代理" class="headerlink" title="远程代理"></a>远程代理</h2><p>Charles可以将请求代理到远程链接(mapping remote)，也可以代理到本地文件(mapping local)。</p>
+<p><img src="http://o99eh3ii0.bkt.clouddn.com/FoLoz_oUlmofKFRliBLjPJRaZ8Ks" alt=""></p>
+<p>填写要代理的path，代理到的path。</p>
+<p>这里有个技巧，<strong>把完整的path拷贝填入host，然后光标移动到下面的输入框</strong>，就会自动拆解填入</p>
 
       
     </div>
@@ -465,7 +471,7 @@ https代理在访问https的资源的时候，我们会看到请求都是unknown
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-count">60</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>
@@ -504,7 +510,7 @@ https代理在访问https的资源的时候，我们会看到请求都是unknown
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#https代理"><span class="nav-number">1.</span> <span class="nav-text">https代理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#手机请求代理"><span class="nav-number">2.</span> <span class="nav-text">手机请求代理</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#https代理"><span class="nav-number">1.</span> <span class="nav-text">https代理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#手机请求代理"><span class="nav-number">2.</span> <span class="nav-text">手机请求代理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#证书信任问题"><span class="nav-number">3.</span> <span class="nav-text">证书信任问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#远程代理"><span class="nav-number">4.</span> <span class="nav-text">远程代理</span></a></li></ol></div>
             
           </div>
         </section>
