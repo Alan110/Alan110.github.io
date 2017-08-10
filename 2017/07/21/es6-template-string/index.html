@@ -68,7 +68,7 @@ let str = `string text`let str = `string text line 1           string text line 
 <meta property="og:description" content="es6新增了模板字符串，增强了字符串变量的能力。
 语法模板字符串支持多行字符串，变量插值，以及函数标签。在模版字符串内使用反引号（`）时，需要在它前面加转义符（\）
 let str = `string text`let str = `string text line 1           string text line 2 `let str = `string text $&amp;#123;expr">
-<meta property="og:updated_time" content="2017-07-21T00:50:03.000Z">
+<meta property="og:updated_time" content="2017-08-10T10:09:25.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="es6-模板字符串">
 <meta name="twitter:description" content="es6新增了模板字符串，增强了字符串变量的能力。
@@ -321,9 +321,18 @@ let str = `string text`let str = `string text line 1           string text line 
 <figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">tag</span>(<span class="params">strings, ...values</span>) </span>&#123;</div><div class="line">  <span class="built_in">console</span>.log(strings.raw[<span class="number">0</span>]); </div><div class="line">  <span class="comment">// "string text line 1 \\n string text line 2"</span></div><div class="line">&#125;</div><div class="line"></div><div class="line">tag<span class="string">`string text line 1 \n string text line 2`</span>;</div></pre></td></tr></table></figure>
 <p>在标签函数的第一个参数中，存在一个特殊的属性raw ，我们可以通过它来访问模板字符串的原始字符串。</p>
 <h2 id="标签函数的应用"><a href="#标签函数的应用" class="headerlink" title="标签函数的应用"></a>标签函数的应用</h2><blockquote>
-<p>利用标签函数来实现模板引擎</p>
+<p>过滤非法字符串</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">safeHTML</span>(<span class="params">strings, ...interpolatedValues</span>) </span>&#123; <span class="comment">// `...` essentially slices the arguments for us.</span></div><div class="line">  <span class="keyword">return</span> strings.reduce(<span class="function">(<span class="params">total, current, index</span>) =&gt;</span> &#123; <span class="comment">// use an arrow function for brevity here</span></div><div class="line">    total += current;</div><div class="line">    <span class="keyword">if</span> (interpolatedValues.hasOwnProperty(index)) &#123;</div><div class="line">      total += <span class="built_in">String</span>(interpolatedValues[index]).replace(<span class="regexp">/&amp;/g</span>, <span class="string">'&amp;amp;'</span>).replace(<span class="regexp">/&lt;/g</span>, <span class="string">'&amp;lt;'</span>).replace(<span class="regexp">/&gt;/g</span>, <span class="string">'&amp;gt;'</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> total;</div><div class="line">  &#125;, <span class="string">''</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
 <p>过滤掉多行字符串中的空格</p>
 </blockquote>
+<p>fdsfsd</p>
+<blockquote>
+<p>简易模板引擎</p>
+</blockquote>
+<p>原理是利用标签函数可以拿到模板字符串中的所有字符串片段和变量值，并且一一对应,所以我们可以<strong>选择性的重新组装模板</strong>,或者对变量进行处理。这里借助了symbol变量，作为block片段的分隔符</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="keyword">var</span> startBlockSentinel = <span class="built_in">Symbol</span>(<span class="string">'blockSentinel'</span>);</div><div class="line"><span class="keyword">var</span> ignoreBlockSentinel = <span class="built_in">Symbol</span>(<span class="string">'ignoreBlockSentinel'</span>);</div><div class="line"><span class="keyword">var</span> endBlockSentinel = <span class="built_in">Symbol</span>(<span class="string">'endBlockSentinel'</span>);</div><div class="line"></div><div class="line"><span class="keyword">var</span> helpers = &#123;</div><div class="line">    <span class="attr">if</span>: <span class="function">(<span class="params">condition, thenTemplate, elseTemplate = <span class="string">''</span></span>) =&gt;</span> &#123;</div><div class="line">        <span class="keyword">return</span> condition ? startBlockSentinel : ignoreBlockSentinel;</div><div class="line">    &#125;,</div><div class="line">    <span class="attr">end</span>: <span class="function"><span class="params">()</span> =&gt;</span> &#123;</div><div class="line">        <span class="keyword">return</span> endBlockSentinel;</div><div class="line">    &#125;,</div><div class="line">    <span class="attr">unless</span>: <span class="function">(<span class="params">condition, thenTemplate, elseTemplate</span>) =&gt;</span> &#123;</div><div class="line">        <span class="built_in">console</span>.log(!condition)</div><div class="line">        <span class="keyword">return</span> !condition ? startBlockSentinel : ignoreBlockSentinel;</div><div class="line">    &#125;,</div><div class="line">    registerHelper(name, fn) &#123;</div><div class="line">        helpers[name] = fn;</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * </div><div class="line"> * 标签模板，修饰模板字符串的返回值</div><div class="line"> * 拼接字符串，变量和字面字符是一一对应的</div><div class="line"> * @param &#123;any&#125; strings  字面字符串数组</div><div class="line"> * @param &#123;any&#125; interpolatedValues  替换变量数组</div><div class="line"> * @returns </div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">template</span>(<span class="params">strings, ...interpolatedValues</span>) </span>&#123;</div><div class="line">    <span class="comment">// 条件块状态记录</span></div><div class="line">    <span class="keyword">const</span> statusStuck = [];</div><div class="line"></div><div class="line">    <span class="keyword">return</span> strings.reduce(<span class="function">(<span class="params">total, current, index</span>) =&gt;</span> &#123;</div><div class="line"></div><div class="line">        <span class="comment">// 拼接字符串, if为true, 或者不在if内</span></div><div class="line">        <span class="keyword">if</span> ((statusStuck.length &gt; <span class="number">0</span> &amp;&amp; statusStuck[statusStuck.length - <span class="number">1</span>] == startBlockSentinel) || statusStuck.length == <span class="number">0</span>) &#123;</div><div class="line">            <span class="comment">// +占位符之前的内容</span></div><div class="line">            total += current;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">// 更新当前状态</span></div><div class="line">        <span class="keyword">if</span> (interpolatedValues.hasOwnProperty(index)) &#123;</div><div class="line">            <span class="keyword">let</span> value = interpolatedValues[index];</div><div class="line">            <span class="keyword">if</span> (value === startBlockSentinel || value === ignoreBlockSentinel) &#123;</div><div class="line">                statusStuck.push(value);</div><div class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (value === endBlockSentinel) &#123;</div><div class="line">                statusStuck.pop();</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                <span class="comment">// + 占位符变量，过滤非法字符,转义成了实体，不能有&lt;div&gt; </span></div><div class="line">                <span class="comment">// 只在是true block状态时才添加，否则丢弃</span></div><div class="line">                <span class="comment">// total +=  String(interpolatedValues[index]).replace(/&amp;/g, '&amp;amp;').replace(/&lt;/g, '&amp;lt;').replace(/&gt;/g, '&amp;gt;');</span></div><div class="line">                <span class="keyword">if</span>(statusStuck[statusStuck.length - <span class="number">1</span>] == startBlockSentinel)&#123;</div><div class="line">                    total += <span class="built_in">String</span>(interpolatedValues[index]);</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">return</span> total;</div><div class="line"></div><div class="line">    &#125;, <span class="string">''</span>);</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">export</span> &#123; template, helpers &#125;</div></pre></td></tr></table></figure>
 
       
     </div>
@@ -378,6 +387,10 @@ let str = `string text`let str = `string text line 1           string text line 
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2017/08/10/node-restfulapi/" rel="prev" title="restful api设计">
+                restful api设计 <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -430,7 +443,7 @@ let str = `string text`let str = `string text line 1           string text line 
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">60</span>
+              <span class="site-state-item-count">61</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>
