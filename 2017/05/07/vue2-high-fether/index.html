@@ -58,19 +58,19 @@
 
 
 
-<meta name="description" content="递归组件使用name属性, 便可在组件的template中直接使用组件本身
-&amp;lt;template lang=&quot;html&quot;&amp;gt;    &amp;lt;li&amp;gt;        &amp;lt;div            :class=&quot;&amp;#123;bold: isFolder&amp;#125;&quot;            @click=&quot;handelClick&quot;            v-if=&quot;model&quot;&amp;g">
+<meta name="description" content="递归组件使用name属性, 便可在组件的template中直接使用组件本身, 比如在某些递归的场景就需要如此使用
+&amp;lt;template lang=&quot;html&quot;&amp;gt;    &amp;lt;li&amp;gt;        &amp;lt;item&amp;gt;&amp;lt;/item&amp;gt;    &amp;lt;/li&amp;gt;&amp;lt;/template&amp;gt;&amp;lt;script&amp;gt;    import utils from">
 <meta property="og:type" content="article">
-<meta property="og:title" content="vue2高级能力">
+<meta property="og:title" content="vue2高级技巧-基础能力">
 <meta property="og:url" content="http://http://localhost:4000/2017/05/07/vue2-high-fether/index.html">
 <meta property="og:site_name" content="上善若水">
-<meta property="og:description" content="递归组件使用name属性, 便可在组件的template中直接使用组件本身
-&amp;lt;template lang=&quot;html&quot;&amp;gt;    &amp;lt;li&amp;gt;        &amp;lt;div            :class=&quot;&amp;#123;bold: isFolder&amp;#125;&quot;            @click=&quot;handelClick&quot;            v-if=&quot;model&quot;&amp;g">
-<meta property="og:updated_time" content="2017-05-28T01:21:39.000Z">
+<meta property="og:description" content="递归组件使用name属性, 便可在组件的template中直接使用组件本身, 比如在某些递归的场景就需要如此使用
+&amp;lt;template lang=&quot;html&quot;&amp;gt;    &amp;lt;li&amp;gt;        &amp;lt;item&amp;gt;&amp;lt;/item&amp;gt;    &amp;lt;/li&amp;gt;&amp;lt;/template&amp;gt;&amp;lt;script&amp;gt;    import utils from">
+<meta property="og:updated_time" content="2017-09-05T23:06:32.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="vue2高级能力">
-<meta name="twitter:description" content="递归组件使用name属性, 便可在组件的template中直接使用组件本身
-&amp;lt;template lang=&quot;html&quot;&amp;gt;    &amp;lt;li&amp;gt;        &amp;lt;div            :class=&quot;&amp;#123;bold: isFolder&amp;#125;&quot;            @click=&quot;handelClick&quot;            v-if=&quot;model&quot;&amp;g">
+<meta name="twitter:title" content="vue2高级技巧-基础能力">
+<meta name="twitter:description" content="递归组件使用name属性, 便可在组件的template中直接使用组件本身, 比如在某些递归的场景就需要如此使用
+&amp;lt;template lang=&quot;html&quot;&amp;gt;    &amp;lt;li&amp;gt;        &amp;lt;item&amp;gt;&amp;lt;/item&amp;gt;    &amp;lt;/li&amp;gt;&amp;lt;/template&amp;gt;&amp;lt;script&amp;gt;    import utils from">
 
 
 
@@ -94,7 +94,7 @@
   <link rel="canonical" href="http://http://localhost:4000/2017/05/07/vue2-high-fether/"/>
 
 
-  <title> vue2高级能力 | 上善若水 </title>
+  <title> vue2高级技巧-基础能力 | 上善若水 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -253,7 +253,7 @@
             
             
               
-                vue2高级能力
+                vue2高级技巧-基础能力
               
             
           </h1>
@@ -300,26 +300,45 @@
       
 
       
-        <h2 id="递归组件"><a href="#递归组件" class="headerlink" title="递归组件"></a>递归组件</h2><p>使用name属性, 便可在组件的template中直接使用组件本身</p>
-<figure class="highlight"><table><tr><td class="code"><pre><div class="line">&lt;template lang="html"&gt;</div><div class="line">    &lt;li&gt;</div><div class="line">        &lt;div</div><div class="line">            :class="&#123;bold: isFolder&#125;"</div><div class="line">            @click="handelClick"</div><div class="line">            v-if="model"&gt;</div><div class="line">            &#123;&#123;model.name&#125;&#125;</div><div class="line">            &lt;span v-if="isFolder"&gt;[&#123;&#123;model.open ? '-' : '+'&#125;&#125;]&lt;/span&gt;</div><div class="line">        &lt;/div&gt;</div><div class="line">        &lt;ul v-show="model.open" v-if="isFolder"&gt;</div><div class="line">            &lt;item</div><div class="line">                class="item"</div><div class="line">                v-for="item in model.children"</div><div class="line">                key="item"</div><div class="line">                :model="item"&gt;</div><div class="line">            &lt;/item&gt;</div><div class="line">            &lt;li class="add" @click="addChild"&gt;+&lt;/li&gt;</div><div class="line">        &lt;/ul&gt;</div><div class="line">    &lt;/li&gt;</div><div class="line">&lt;/template&gt;</div><div class="line">&lt;script&gt;</div><div class="line"></div><div class="line">    import utils from 'utils'</div><div class="line"></div><div class="line">    export default&#123;</div><div class="line"></div><div class="line">            name : 'item',</div><div class="line"></div><div class="line">            props: &#123;</div><div class="line">                model: Object</div><div class="line">            &#125;,</div><div class="line"></div><div class="line">            computed: &#123;</div><div class="line">                isFolder: function () &#123;</div><div class="line">                    return this.model &amp;&amp;  this.model.children &amp;&amp;</div><div class="line">                        this.model.children.length</div><div class="line">                &#125;</div><div class="line">            &#125;,</div><div class="line"></div><div class="line">            methods: &#123;</div><div class="line">                handelClick()&#123;</div><div class="line">                    if(this.isFolder) &#123;</div><div class="line">                        this.toggle();</div><div class="line">                    &#125;else&#123;</div><div class="line">                        utils.eventBus.$emit(this.model.actionName);</div><div class="line">                    &#125;</div><div class="line">                &#125;,</div><div class="line">                toggle: function () &#123;</div><div class="line">                    if (this.isFolder) &#123;</div><div class="line">                        this.open = !this.open</div><div class="line">                    &#125;</div><div class="line">                &#125;,</div><div class="line">                changeType: function () &#123;</div><div class="line">                    if (!this.isFolder) &#123;</div><div class="line">                        Vue.set(this.model, 'children', [])</div><div class="line">                        this.addChild()</div><div class="line">                        this.open = true</div><div class="line">                    &#125;</div><div class="line">                &#125;,</div><div class="line">                addChild: function () &#123;</div><div class="line">                    this.model.children.push(&#123;</div><div class="line">                        name: 'new stuff'</div><div class="line">                    &#125;)</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">    &#125;</div><div class="line">&lt;/script&gt;</div><div class="line"></div><div class="line">&lt;style rel="stylesheet/less"&gt;</div><div class="line">    .item &#123;</div><div class="line">        cursor: pointer;</div><div class="line">    &#125;</div><div class="line">    .bold &#123;</div><div class="line">        font-weight: bold;</div><div class="line">    &#125;</div><div class="line">&lt;/style&gt;</div></pre></td></tr></table></figure>
+        <h2 id="递归组件"><a href="#递归组件" class="headerlink" title="递归组件"></a>递归组件</h2><p>使用name属性, 便可在组件的template中直接使用组件本身, <strong>比如在某些递归的场景就需要如此使用</strong></p>
+<figure class="highlight"><table><tr><td class="code"><pre><div class="line">&lt;template lang="html"&gt;</div><div class="line">    &lt;li&gt;</div><div class="line">        &lt;item&gt;&lt;/item&gt;</div><div class="line">    &lt;/li&gt;</div><div class="line">&lt;/template&gt;</div><div class="line">&lt;script&gt;</div><div class="line">    import utils from 'utils'</div><div class="line">    export default&#123;</div><div class="line">        name : 'item',</div><div class="line">        props: &#123;</div><div class="line">            model: Object</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
 <h2 id="动态切换component"><a href="#动态切换component" class="headerlink" title="动态切换component"></a>动态切换component</h2><p>当我们需要动态切换组件的时候，可以使用内置的component标签，不必写冗余的if else，但是要注意的是，动态切换默认会重新渲染组件，在某些比较费时的组件又需要频繁切换的时候，可以用keep-alive标签使其保持在内存。</p>
+<p><strong>动态component其实可以和异步组件，以及vuex数据结合</strong>，实现按需注册并加载使用组件。</p>
 <figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">&lt;component v-<span class="keyword">for</span>=<span class="string">"(layer,index) in curScene.layers"</span> :key=<span class="string">"layer.id"</span> :is=<span class="string">"layer.type"</span> source=<span class="string">"scenebox"</span> :layer=<span class="string">"layer"</span> :index=<span class="string">"index"</span> :layers=<span class="string">"curScene.layers"</span>&gt;<span class="xml"><span class="tag">&lt;/<span class="name">component</span>&gt;</span></span></div><div class="line"></div><div class="line"><span class="comment">// 保持组件在内存，不会重新初始化</span></div><div class="line">&lt;keep-alive&gt;</div><div class="line">    <span class="xml"><span class="tag">&lt;<span class="name">component</span> <span class="attr">v-for</span>=<span class="string">"(layer,index) in curScene.layers"</span> <span class="attr">:key</span>=<span class="string">"layer.id"</span> <span class="attr">:is</span>=<span class="string">"layer.type"</span> <span class="attr">source</span>=<span class="string">"scenebox"</span> <span class="attr">:layer</span>=<span class="string">"layer"</span> <span class="attr">:index</span>=<span class="string">"index"</span> <span class="attr">:layers</span>=<span class="string">"curScene.layers"</span>&gt;</span><span class="tag">&lt;/<span class="name">component</span>&gt;</span></span></div><div class="line">&lt;<span class="regexp">/keep-alive&gt;</span></div></pre></td></tr></table></figure>
-<h2 id="v-model-的秘密"><a href="#v-model-的秘密" class="headerlink" title="v-model 的秘密"></a>v-model 的秘密</h2><p><a href="http://www.cnblogs.com/wwlhome/p/6551165.html" target="_blank" rel="external">http://www.cnblogs.com/wwlhome/p/6551165.html</a></p>
+<h2 id="v-model-的秘密"><a href="#v-model-的秘密" class="headerlink" title="v-model 的秘密"></a>v-model 的秘密</h2><p>vue的双向数据绑定其实语法糖，通过内部触发input事件，配合指令实现。<br><a href="http://www.cnblogs.com/wwlhome/p/6551165.html" target="_blank" rel="external">http://www.cnblogs.com/wwlhome/p/6551165.html</a></p>
 <h2 id="v-for-key"><a href="#v-for-key" class="headerlink" title="v-for key"></a>v-for key</h2><p>用于强制替换元素/组件而不是重复使用它<br>key 是唯一id，不能重复，否则会报致命错误<br>如果不使用key，Vue会使用一种最大限度减少动态元素并且尽可能的尝试修复/再利用相同类型元素的算法。使用key，它会基于key的变化重新排列元素顺序，并且会移除key不存在的元素。</p>
 <p>有子组件的时候，需要加上key</p>
-<h2 id="调整数组顺序"><a href="#调整数组顺序" class="headerlink" title="调整数组顺序"></a>调整数组顺序</h2><p>可以使用splice变异方法<br><code>layers.splice.apply(layers, [toIndex, 0].concat(moved = layers.splice(fromIndex, howMany)) )</code></p>
-<h2 id="v-for-和-v-if-需要同时使用时"><a href="#v-for-和-v-if-需要同时使用时" class="headerlink" title="v-for 和 v-if 需要同时使用时"></a>v-for 和 v-if 需要同时使用时</h2><p>使用<template></template>标签替换<br><figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">&lt;template  v-for=&quot;page in pages&quot; &gt;</div><div class="line">		&lt;tr class=&quot;item&quot; v-if=&quot;!page.global&quot; :key=&quot;page.id&quot;&gt;</div><div class="line">			&lt;td&gt;&lt;img :src=&quot;page.global.sceneImgs[0] + &apos;?key=&apos; + randomKey&quot; class=&quot;page-thumb&quot;</div><div class="line">					 v-if=&quot;page.global.sceneImgs &amp;&amp; page.global.sceneImgs[0]&quot; style=&quot;height:100%;&quot; alt=&quot;&quot;&gt;&lt;/td&gt;</div><div class="line">			&lt;td&gt;&#123;&#123; page.title &#125;&#125;&lt;/td&gt;&lt;Paste&gt;</div></pre></td></tr></table></figure></p>
-<h2 id="动态组件"><a href="#动态组件" class="headerlink" title="动态组件"></a>动态组件</h2><h2 id="指令"><a href="#指令" class="headerlink" title="指令"></a><a href="https://cn.vuejs.org/v2/guide/custom-directive.html#main" target="_blank" rel="external">指令</a></h2><p>在 Vue 中可以把一系列 复杂的操作 包装为一个指令<br>什么是复杂的操作?<br>复杂逻辑功能的包装、违背数据驱动的 DOM 操作以及对一些 Hack 手段的掩盖等。我们总是期望以操作数据的形式来实现功能逻辑。</p>
+<h2 id="调整数组顺序"><a href="#调整数组顺序" class="headerlink" title="调整数组顺序"></a>调整数组顺序</h2><p>可以使用数组的变异方法splice<br><figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">layers.splice.apply(layers, [toIndex, <span class="number">0</span>].concat(moved = layers.splice(fromIndex, howMany)) )<span class="string">`</span></div></pre></td></tr></table></figure></p>
+<h2 id="v-for-和-v-if-需要同时使用时"><a href="#v-for-和-v-if-需要同时使用时" class="headerlink" title="v-for 和 v-if 需要同时使用时"></a>v-for 和 v-if 需要同时使用时</h2><p>使用<template></template>标签替换, <strong>template是一个空标签，没有实际渲染内容，但是可以作为逻辑的载体</strong></p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">&lt;template  v-<span class="keyword">for</span>=<span class="string">"page in pages"</span> &gt;</div><div class="line">    &lt;tr class="item" v-if="!page.global" :key="page.id"&gt;</div><div class="line">        &lt;td&gt;&lt;img :src="page.global.sceneImgs[0] + '?key=' + randomKey" class="page-thumb"</div><div class="line">                    v-if="page.global.sceneImgs &amp;&amp; page.global.sceneImgs[0]" style="height:100%;" alt=""&gt;&lt;/td&gt;</div><div class="line">        &lt;td&gt;&#123;&#123; page.title &#125;&#125;&lt;/td&gt;&lt;Paste&gt;</div><div class="line">&lt;/templte&gt;</div></pre></td></tr></table></figure>
+<h2 id="动态组件"><a href="#动态组件" class="headerlink" title="动态组件"></a>动态组件</h2><p>利用webpack的异步加载模块的能力，和vue的异步注册实现动态组件加载。</p>
+<p>异步import返回的是一个promise</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">Vue.component(<span class="string">'widget'</span>,()=&gt; <span class="keyword">import</span>(<span class="string">'./widget/text'</span>));</div></pre></td></tr></table></figure>
+<h2 id="指令"><a href="#指令" class="headerlink" title="指令"></a><a href="https://cn.vuejs.org/v2/guide/custom-directive.html#main" target="_blank" rel="external">指令</a></h2><p>在 Vue 中可以把一系列 复杂的操作 包装为一个指令<br>什么是复杂的操作?<br>复杂逻辑功能的包装、违背数据驱动的 DOM 操作以及对一些 Hack 手段的掩盖等。我们总是期望以操作数据的形式来实现功能逻辑。</p>
 <p>在vue的指令中是不可以双向数据绑定的，如官方所说：除了 el 之外，其它参数都应该是只读的，尽量不要修改他们。如果需要在钩子之间共享数据，建议通过元素的 dataset 来进行</p>
 <p>指令可以在钩子函数中去封装dom, 应尽可能的操作当前dom，比如在inserted的时候，当前dom插入文档时<br>如果要操作别的dom就需要等待他们插入文档，此时可以使用nextTick,vnode.context为当前的vue对象</p>
 <h3 id="拖拽示例"><a href="#拖拽示例" class="headerlink" title="拖拽示例"></a>拖拽示例</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">Vue.directive(<span class="string">'drag'</span>, &#123;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * value.target = 实际需要移动的dom元素的ref名</div><div class="line">     */</div><div class="line">    inserted: <span class="function"><span class="keyword">function</span> (<span class="params">el, binding,vnode</span>) </span>&#123;</div><div class="line">        <span class="comment">// 下一帧再获取dom元素</span></div><div class="line">        vnode.context.$nextTick(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">            <span class="comment">// 实际移动的元素</span></div><div class="line">            <span class="keyword">let</span> moveEl = <span class="keyword">this</span>.$refs[binding.value.target];</div><div class="line">            <span class="comment">// 覆盖下面有监听mousemove的元素，避免干扰</span></div><div class="line">            <span class="keyword">let</span> $mask = $(<span class="string">'&lt;div class="project-mask" style="position: absolute; top : 30px; left: 0; right:0;bottom:0; z-index: 200px; display: none;"&gt;&lt;/div&gt;'</span>).appendTo(moveEl);</div><div class="line">            el.onmousedown = <span class="function"><span class="keyword">function</span> (<span class="params">ev</span>) </span>&#123;</div><div class="line">                $mask.show();</div><div class="line">                <span class="keyword">var</span> disX = ev.clientX - moveEl.offsetLeft;</div><div class="line">                <span class="keyword">var</span> disY = ev.clientY - moveEl.offsetTop;</div><div class="line">                <span class="built_in">document</span>.body.focus();</div><div class="line">                <span class="comment">// prevent text selection in IE</span></div><div class="line">                <span class="built_in">document</span>.onselectstart = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123; <span class="keyword">return</span> <span class="literal">false</span>; &#125;;</div><div class="line">                <span class="comment">// prevent IE from trying to drag an image</span></div><div class="line">                moveEl.ondragstart = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123; <span class="keyword">return</span> <span class="literal">false</span>; &#125;;</div><div class="line"></div><div class="line">                <span class="built_in">document</span>.onmousemove = <span class="function"><span class="keyword">function</span> (<span class="params">ev</span>) </span>&#123;</div><div class="line">                    <span class="keyword">var</span> l = ev.clientX - disX;</div><div class="line">                    <span class="keyword">var</span> t = ev.clientY - disY;</div><div class="line">                    moveEl.style.left = l + <span class="string">'px'</span>;</div><div class="line">                    moveEl.style.top = t + <span class="string">'px'</span>;</div><div class="line">                &#125;;</div><div class="line">                <span class="built_in">document</span>.onmouseup = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">                    $mask.hide();</div><div class="line">                    <span class="built_in">document</span>.onmousemove = <span class="literal">null</span>;</div><div class="line">                    <span class="built_in">document</span>.onselectstart = <span class="literal">null</span>;</div><div class="line">                    moveEl.ondragstart = <span class="literal">null</span>;</div><div class="line">                    <span class="built_in">document</span>.onmouseup = <span class="literal">null</span>;</div><div class="line">                &#125;;</div><div class="line">            &#125;;</div><div class="line"></div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
 <h2 id="vuex"><a href="#vuex" class="headerlink" title="vuex"></a>vuex</h2><blockquote>
-<p>vuex于eventBus的区别<br>vuex = gutters + actions + mutations<br>状态管理器，vuex = 全局事件中心 + 全局变量<br>eventBus = 全局事件中心<br>所以vuex更加强大, </p>
+<p>vuex于eventBus的区别</p>
 </blockquote>
-<p>只是简单的父子组件通信，使用$emit，$on<br>稍微复杂的跨组件通信使用eventBus<br>非常复杂的跨组件通信，以及状态切换使用vuex</p>
+<p>vuex = getters + actions + mutations<br>状态管理器，vuex = 全局事件中心 + 全局变量<br>eventBus = 全局事件中心<br>所以vuex更加强大, </p>
 <blockquote>
-<p>心得<br>推荐所有的状态变化都通过mutations来改变。如果1个操作很复杂，或者是公用的，则可提取到action中，action中可以再访问action，或者提交多个commit，以及异步操作。<br>mutations中的方法，应该尽可能的抽象, 满足尽可能多的情况。<br>payload应该使用对象，拥有更好的扩展性。</p>
+<p>组件通信心得</p>
 </blockquote>
+<ul>
+<li>只是简单的父子组件通信，使用$emit，$on</li>
+<li>稍微复杂的跨组件通信使用eventBus</li>
+<li>非常复杂的跨组件通信，以及状态切换使用vuex</li>
+</ul>
+<blockquote>
+<p>vuex心得</p>
+</blockquote>
+<p><strong>在大型复杂的软件架构中，推崇提取组件状态到state成为公共状态</strong>更利于复用，和通信。<br>大型软件架构中<strong>vuex可以拆分成模块，异步注册</strong></p>
+<ul>
+<li>推荐所有的状态变化都通过mutations来改变。如果1个操作很复杂，或者是公用的，则可提取到action中，action中可以再访问action，或者提交多个commit，以及异步操作。</li>
+<li><strong>mutations中的方法，应该尽可能的抽象, 满足尽可能多的情况。</strong></li>
+<li>payload应该使用对象，拥有更好的扩展性。</li>
+</ul>
 
       
     </div>
@@ -403,7 +422,7 @@
   <div class="comments" id="comments">
     
       <div class="ds-thread" data-thread-key="2017/05/07/vue2-high-fether/"
-           data-title="vue2高级能力" data-url="http://http://localhost:4000/2017/05/07/vue2-high-fether/">
+           data-title="vue2高级技巧-基础能力" data-url="http://http://localhost:4000/2017/05/07/vue2-high-fether/">
       </div>
     
   </div>
@@ -430,7 +449,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">61</span>
+              <span class="site-state-item-count">64</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>

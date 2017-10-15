@@ -4,6 +4,80 @@
   
     
     <entry>
+      <title><![CDATA[nodejs生产环境运维]]></title>
+      <url>http://http://localhost:4000/2017/10/15/nodejs-production-operation/</url>
+      <content type="html"><![CDATA[<p>nodejs在生成环境的运维比较复杂，主要是版本多，切换成本较高，奈何node升级很快，node 包版本良莠不齐，稍不注意就使得我们的线上应用挂了。 node更新很快，跟进新的版本有助于程序的迭代，然而过于新也会导致线上的不稳定。</p>
+<p><a href="https://github.com/nodejs/Release#release-schedule1" target="_blank" rel="external">nodejs官方发布计划</a></p>
+<p><img src="http://o99eh3ii0.bkt.clouddn.com/FhNgHi0m4FOSk2bwg0Y__99lRMKf" alt=""></p>
+<p>每隔一年会发布一个LTS长期支持版本，生产环境都建议部署LTS版本。<br>可见今年10.31即将发布8.x的LTS版本，值得期待。这也是写本文的原因，准备升级server的node版本。</p>
+<h2 id="node版本管理"><a href="#node版本管理" class="headerlink" title="node版本管理"></a>node版本管理</h2><blockquote>
+<p><a href="https://github.com/tj/n" target="_blank" rel="external">n</a></p>
+</blockquote>
+<p>n是tj大神的项目,它是npm的一个包, 使用顺序是: node &gt; n &gt; node</p>
+<p>它依赖一个已经安装好的node， 公用已经安装好的全局node，通过下载不同版本的node，进行替换。这会导致全局安装的node_module在不同版本的node中是<strong>共享的，虽然不用再次下载，但可能会存在兼容性问题</strong></p>
+<p><code>npm install -g n</code><br><code>n 6.11.3</code><br><code>n ls</code></p>
+<blockquote>
+<p><a href="https://github.com/creationix/nvm" target="_blank" rel="external">nvm</a> (推荐)</p>
+</blockquote>
+<p>nvm 是一个bash脚本，独立与node 之外，<strong>安装多个node版本的备份保存在~/.nvm目录下，通过改变路径映射实现多版本切换</strong>。每个node版本都需要安装自己的全局模块。</p>
+<p><code>curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.5/install.sh | bash</code><br>安装nvm</p>
+<p><code>command -v nvm</code><br>检测是否安装成功，在Linux上如果没有任何反应执行<code>source .zshrc/.bashrc</code> 或者重新打开一个shell</p>
+<p><code>nvm install node</code><br>下载包，并自动切换到该版本，<strong>目前没有发现只下载，不自动切换的办法</strong></p>
+<p><code>nvm install 6.11.3</code><br>安装具体版本</p>
+<p><code>nvm ls</code><br>查看所有安装的版本<br><strong>如果在安装之前，已经有全局的node，在这里会看到一个system的版本，你可以再次使用它</strong><br><code>nvm use system</code><br><img src="http://o99eh3ii0.bkt.clouddn.com/FoXQxqmpBVQAMeV_VSt6Gd3v2AlS" alt=""></p>
+<p><code>nvm run 6.11.2 file.js</code><br>使用指定版本运行js文件</p>
+<p><code>nvm install 6 --reinstall-packages-from=5</code><br>每个版本都有自己的全局node_modules,好在它提供了一个参数，我们不用每次都重新手动安装。你可以指定从哪个版本复制包引用</p>
+<h2 id="npm包版本管理"><a href="#npm包版本管理" class="headerlink" title="npm包版本管理"></a>npm包版本管理</h2><blockquote>
+<p>npm</p>
+</blockquote>
+<p>npm 3 有个问题是当执行 npm install pkg –save-dev 的时候会自动写入package.json文件，但是其版本写的是<code>&quot;autoprefixer&quot;: &quot;^6.7.2&quot;</code> , <strong>我们知道^代表可以升级第二位开始的版本号，在别的地方install这个项目，可能版本号不一致，许多库第二位版本号升级也会有较大的改动，从而导致项目无法运行成功</strong>。</p>
+<blockquote>
+<p>yarn (推荐)</p>
+</blockquote>
+<p>yarn <strong>只是代替了npm的客户端，依旧是使用的npm的仓库</strong> 用法基本和npm 一致,yarn会生成yarn.lock 文件，确保依赖的版本 。 yarn add 一个包的某个版本， 会自动安装相关依赖</p>
+<p><code>yarn config set registry https://registry.npm.taobao.org</code><br>使用淘宝镜像</p>
+<p><code>yarn install</code><br><code>yarn add package</code><br><code>yarn remove package</code><br>常见命令</p>
+<p><code>yarn upgrade vue</code><br>升级包，用这个命令，会自动安装相关依赖升级</p>
+<blockquote>
+<p>npm5</p>
+</blockquote>
+<p>npm5开始也有package.lock.json文件，也会锁定版本</p>
+<h2 id="线上应用运维-pm2"><a href="#线上应用运维-pm2" class="headerlink" title="线上应用运维-pm2"></a><a href="http://pm2.keymetrics.io/docs/usage/signals-clean-restart/" target="_blank" rel="external">线上应用运维-pm2</a></h2><p>1.如果是ssh登录，运行node server，当断开ssh的时候，服务也会被断开<br>2.应用的输出日志</p>
+<p>pm2这个完美解决这2个问题,应用挂了后会自动重启，还可以进行程序管理,可以监听文件变化自动重启，保存应用输出的所有日志。<br>所以可以不用单独做日志的处理，可以pm2可以捕获console，和程序运行异常的错误到.pm2/log。</p>
+<p>常见命令<br><code>Pm2 start app.js</code><br><code>Pm2 restart app</code><br><code>Pm2 show app</code><br><code>Pm2 list</code><br><code>Pm2 logs app</code></p>
+<blockquote>
+<p>执行环境变化</p>
+</blockquote>
+<p>当执行命令变化时，比如添加的环境变量变化  ， NODE_ENV=production pm2 start app.js<br>需要执行 pm2 delete id ，删除应用，不然无论怎么restart，执行环境都没变</p>
+<blockquote>
+<p>不自动reload</p>
+</blockquote>
+<p>pm2 reload dpub2_pre –no-autorestart<br>所有的pm2 命令都要带上这个参数</p>
+<blockquote>
+<p>多线程</p>
+</blockquote>
+]]></content>
+      
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[vue2-high-feature-render]]></title>
+      <url>http://http://localhost:4000/2017/09/06/vue2-high-feature-render/</url>
+      <content type="html"></content>
+      
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[vue2高级技巧-组件复用]]></title>
+      <url>http://http://localhost:4000/2017/09/06/vue2-high-fethure-reuse/</url>
+      <content type="html"></content>
+      
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[restful api设计]]></title>
       <url>http://http://localhost:4000/2017/08/10/node-restfulapi/</url>
       <content type="html"><![CDATA[<p>前后端分离大行其道，往往是多个客户端，一个服务后端，后端变得服务化。接口越来越多，<strong>保证api的设计更符合人性化，简单，容易理解显得非常重要</strong></p>
@@ -218,28 +292,47 @@
     </entry>
     
     <entry>
-      <title><![CDATA[vue2高级能力]]></title>
+      <title><![CDATA[vue2高级技巧-基础能力]]></title>
       <url>http://http://localhost:4000/2017/05/07/vue2-high-fether/</url>
-      <content type="html"><![CDATA[<h2 id="递归组件"><a href="#递归组件" class="headerlink" title="递归组件"></a>递归组件</h2><p>使用name属性, 便可在组件的template中直接使用组件本身</p>
-<figure class="highlight"><table><tr><td class="code"><pre><div class="line">&lt;template lang="html"&gt;</div><div class="line">    &lt;li&gt;</div><div class="line">        &lt;div</div><div class="line">            :class="&#123;bold: isFolder&#125;"</div><div class="line">            @click="handelClick"</div><div class="line">            v-if="model"&gt;</div><div class="line">            &#123;&#123;model.name&#125;&#125;</div><div class="line">            &lt;span v-if="isFolder"&gt;[&#123;&#123;model.open ? '-' : '+'&#125;&#125;]&lt;/span&gt;</div><div class="line">        &lt;/div&gt;</div><div class="line">        &lt;ul v-show="model.open" v-if="isFolder"&gt;</div><div class="line">            &lt;item</div><div class="line">                class="item"</div><div class="line">                v-for="item in model.children"</div><div class="line">                key="item"</div><div class="line">                :model="item"&gt;</div><div class="line">            &lt;/item&gt;</div><div class="line">            &lt;li class="add" @click="addChild"&gt;+&lt;/li&gt;</div><div class="line">        &lt;/ul&gt;</div><div class="line">    &lt;/li&gt;</div><div class="line">&lt;/template&gt;</div><div class="line">&lt;script&gt;</div><div class="line"></div><div class="line">    import utils from 'utils'</div><div class="line"></div><div class="line">    export default&#123;</div><div class="line"></div><div class="line">            name : 'item',</div><div class="line"></div><div class="line">            props: &#123;</div><div class="line">                model: Object</div><div class="line">            &#125;,</div><div class="line"></div><div class="line">            computed: &#123;</div><div class="line">                isFolder: function () &#123;</div><div class="line">                    return this.model &amp;&amp;  this.model.children &amp;&amp;</div><div class="line">                        this.model.children.length</div><div class="line">                &#125;</div><div class="line">            &#125;,</div><div class="line"></div><div class="line">            methods: &#123;</div><div class="line">                handelClick()&#123;</div><div class="line">                    if(this.isFolder) &#123;</div><div class="line">                        this.toggle();</div><div class="line">                    &#125;else&#123;</div><div class="line">                        utils.eventBus.$emit(this.model.actionName);</div><div class="line">                    &#125;</div><div class="line">                &#125;,</div><div class="line">                toggle: function () &#123;</div><div class="line">                    if (this.isFolder) &#123;</div><div class="line">                        this.open = !this.open</div><div class="line">                    &#125;</div><div class="line">                &#125;,</div><div class="line">                changeType: function () &#123;</div><div class="line">                    if (!this.isFolder) &#123;</div><div class="line">                        Vue.set(this.model, 'children', [])</div><div class="line">                        this.addChild()</div><div class="line">                        this.open = true</div><div class="line">                    &#125;</div><div class="line">                &#125;,</div><div class="line">                addChild: function () &#123;</div><div class="line">                    this.model.children.push(&#123;</div><div class="line">                        name: 'new stuff'</div><div class="line">                    &#125;)</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">    &#125;</div><div class="line">&lt;/script&gt;</div><div class="line"></div><div class="line">&lt;style rel="stylesheet/less"&gt;</div><div class="line">    .item &#123;</div><div class="line">        cursor: pointer;</div><div class="line">    &#125;</div><div class="line">    .bold &#123;</div><div class="line">        font-weight: bold;</div><div class="line">    &#125;</div><div class="line">&lt;/style&gt;</div></pre></td></tr></table></figure>
+      <content type="html"><![CDATA[<h2 id="递归组件"><a href="#递归组件" class="headerlink" title="递归组件"></a>递归组件</h2><p>使用name属性, 便可在组件的template中直接使用组件本身, <strong>比如在某些递归的场景就需要如此使用</strong></p>
+<figure class="highlight"><table><tr><td class="code"><pre><div class="line">&lt;template lang="html"&gt;</div><div class="line">    &lt;li&gt;</div><div class="line">        &lt;item&gt;&lt;/item&gt;</div><div class="line">    &lt;/li&gt;</div><div class="line">&lt;/template&gt;</div><div class="line">&lt;script&gt;</div><div class="line">    import utils from 'utils'</div><div class="line">    export default&#123;</div><div class="line">        name : 'item',</div><div class="line">        props: &#123;</div><div class="line">            model: Object</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
 <h2 id="动态切换component"><a href="#动态切换component" class="headerlink" title="动态切换component"></a>动态切换component</h2><p>当我们需要动态切换组件的时候，可以使用内置的component标签，不必写冗余的if else，但是要注意的是，动态切换默认会重新渲染组件，在某些比较费时的组件又需要频繁切换的时候，可以用keep-alive标签使其保持在内存。</p>
+<p><strong>动态component其实可以和异步组件，以及vuex数据结合</strong>，实现按需注册并加载使用组件。</p>
 <figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">&lt;component v-<span class="keyword">for</span>=<span class="string">"(layer,index) in curScene.layers"</span> :key=<span class="string">"layer.id"</span> :is=<span class="string">"layer.type"</span> source=<span class="string">"scenebox"</span> :layer=<span class="string">"layer"</span> :index=<span class="string">"index"</span> :layers=<span class="string">"curScene.layers"</span>&gt;<span class="xml"><span class="tag">&lt;/<span class="name">component</span>&gt;</span></span></div><div class="line"></div><div class="line"><span class="comment">// 保持组件在内存，不会重新初始化</span></div><div class="line">&lt;keep-alive&gt;</div><div class="line">    <span class="xml"><span class="tag">&lt;<span class="name">component</span> <span class="attr">v-for</span>=<span class="string">"(layer,index) in curScene.layers"</span> <span class="attr">:key</span>=<span class="string">"layer.id"</span> <span class="attr">:is</span>=<span class="string">"layer.type"</span> <span class="attr">source</span>=<span class="string">"scenebox"</span> <span class="attr">:layer</span>=<span class="string">"layer"</span> <span class="attr">:index</span>=<span class="string">"index"</span> <span class="attr">:layers</span>=<span class="string">"curScene.layers"</span>&gt;</span><span class="tag">&lt;/<span class="name">component</span>&gt;</span></span></div><div class="line">&lt;<span class="regexp">/keep-alive&gt;</span></div></pre></td></tr></table></figure>
-<h2 id="v-model-的秘密"><a href="#v-model-的秘密" class="headerlink" title="v-model 的秘密"></a>v-model 的秘密</h2><p><a href="http://www.cnblogs.com/wwlhome/p/6551165.html" target="_blank" rel="external">http://www.cnblogs.com/wwlhome/p/6551165.html</a></p>
+<h2 id="v-model-的秘密"><a href="#v-model-的秘密" class="headerlink" title="v-model 的秘密"></a>v-model 的秘密</h2><p>vue的双向数据绑定其实语法糖，通过内部触发input事件，配合指令实现。<br><a href="http://www.cnblogs.com/wwlhome/p/6551165.html" target="_blank" rel="external">http://www.cnblogs.com/wwlhome/p/6551165.html</a></p>
 <h2 id="v-for-key"><a href="#v-for-key" class="headerlink" title="v-for key"></a>v-for key</h2><p>用于强制替换元素/组件而不是重复使用它<br>key 是唯一id，不能重复，否则会报致命错误<br>如果不使用key，Vue会使用一种最大限度减少动态元素并且尽可能的尝试修复/再利用相同类型元素的算法。使用key，它会基于key的变化重新排列元素顺序，并且会移除key不存在的元素。</p>
 <p>有子组件的时候，需要加上key</p>
-<h2 id="调整数组顺序"><a href="#调整数组顺序" class="headerlink" title="调整数组顺序"></a>调整数组顺序</h2><p>可以使用splice变异方法<br><code>layers.splice.apply(layers, [toIndex, 0].concat(moved = layers.splice(fromIndex, howMany)) )</code></p>
-<h2 id="v-for-和-v-if-需要同时使用时"><a href="#v-for-和-v-if-需要同时使用时" class="headerlink" title="v-for 和 v-if 需要同时使用时"></a>v-for 和 v-if 需要同时使用时</h2><p>使用<template></template>标签替换<br><figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">&lt;template  v-for=&quot;page in pages&quot; &gt;</div><div class="line">		&lt;tr class=&quot;item&quot; v-if=&quot;!page.global&quot; :key=&quot;page.id&quot;&gt;</div><div class="line">			&lt;td&gt;&lt;img :src=&quot;page.global.sceneImgs[0] + &apos;?key=&apos; + randomKey&quot; class=&quot;page-thumb&quot;</div><div class="line">					 v-if=&quot;page.global.sceneImgs &amp;&amp; page.global.sceneImgs[0]&quot; style=&quot;height:100%;&quot; alt=&quot;&quot;&gt;&lt;/td&gt;</div><div class="line">			&lt;td&gt;&#123;&#123; page.title &#125;&#125;&lt;/td&gt;&lt;Paste&gt;</div></pre></td></tr></table></figure></p>
-<h2 id="动态组件"><a href="#动态组件" class="headerlink" title="动态组件"></a>动态组件</h2><h2 id="指令"><a href="#指令" class="headerlink" title="指令"></a><a href="https://cn.vuejs.org/v2/guide/custom-directive.html#main" target="_blank" rel="external">指令</a></h2><p>在 Vue 中可以把一系列 复杂的操作 包装为一个指令<br>什么是复杂的操作?<br>复杂逻辑功能的包装、违背数据驱动的 DOM 操作以及对一些 Hack 手段的掩盖等。我们总是期望以操作数据的形式来实现功能逻辑。</p>
+<h2 id="调整数组顺序"><a href="#调整数组顺序" class="headerlink" title="调整数组顺序"></a>调整数组顺序</h2><p>可以使用数组的变异方法splice<br><figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">layers.splice.apply(layers, [toIndex, <span class="number">0</span>].concat(moved = layers.splice(fromIndex, howMany)) )<span class="string">`</span></div></pre></td></tr></table></figure></p>
+<h2 id="v-for-和-v-if-需要同时使用时"><a href="#v-for-和-v-if-需要同时使用时" class="headerlink" title="v-for 和 v-if 需要同时使用时"></a>v-for 和 v-if 需要同时使用时</h2><p>使用<template></template>标签替换, <strong>template是一个空标签，没有实际渲染内容，但是可以作为逻辑的载体</strong></p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">&lt;template  v-<span class="keyword">for</span>=<span class="string">"page in pages"</span> &gt;</div><div class="line">    &lt;tr class="item" v-if="!page.global" :key="page.id"&gt;</div><div class="line">        &lt;td&gt;&lt;img :src="page.global.sceneImgs[0] + '?key=' + randomKey" class="page-thumb"</div><div class="line">                    v-if="page.global.sceneImgs &amp;&amp; page.global.sceneImgs[0]" style="height:100%;" alt=""&gt;&lt;/td&gt;</div><div class="line">        &lt;td&gt;&#123;&#123; page.title &#125;&#125;&lt;/td&gt;&lt;Paste&gt;</div><div class="line">&lt;/templte&gt;</div></pre></td></tr></table></figure>
+<h2 id="动态组件"><a href="#动态组件" class="headerlink" title="动态组件"></a>动态组件</h2><p>利用webpack的异步加载模块的能力，和vue的异步注册实现动态组件加载。</p>
+<p>异步import返回的是一个promise</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">Vue.component(<span class="string">'widget'</span>,()=&gt; <span class="keyword">import</span>(<span class="string">'./widget/text'</span>));</div></pre></td></tr></table></figure>
+<h2 id="指令"><a href="#指令" class="headerlink" title="指令"></a><a href="https://cn.vuejs.org/v2/guide/custom-directive.html#main" target="_blank" rel="external">指令</a></h2><p>在 Vue 中可以把一系列 复杂的操作 包装为一个指令<br>什么是复杂的操作?<br>复杂逻辑功能的包装、违背数据驱动的 DOM 操作以及对一些 Hack 手段的掩盖等。我们总是期望以操作数据的形式来实现功能逻辑。</p>
 <p>在vue的指令中是不可以双向数据绑定的，如官方所说：除了 el 之外，其它参数都应该是只读的，尽量不要修改他们。如果需要在钩子之间共享数据，建议通过元素的 dataset 来进行</p>
 <p>指令可以在钩子函数中去封装dom, 应尽可能的操作当前dom，比如在inserted的时候，当前dom插入文档时<br>如果要操作别的dom就需要等待他们插入文档，此时可以使用nextTick,vnode.context为当前的vue对象</p>
 <h3 id="拖拽示例"><a href="#拖拽示例" class="headerlink" title="拖拽示例"></a>拖拽示例</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">Vue.directive(<span class="string">'drag'</span>, &#123;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * value.target = 实际需要移动的dom元素的ref名</div><div class="line">     */</div><div class="line">    inserted: <span class="function"><span class="keyword">function</span> (<span class="params">el, binding,vnode</span>) </span>&#123;</div><div class="line">        <span class="comment">// 下一帧再获取dom元素</span></div><div class="line">        vnode.context.$nextTick(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">            <span class="comment">// 实际移动的元素</span></div><div class="line">            <span class="keyword">let</span> moveEl = <span class="keyword">this</span>.$refs[binding.value.target];</div><div class="line">            <span class="comment">// 覆盖下面有监听mousemove的元素，避免干扰</span></div><div class="line">            <span class="keyword">let</span> $mask = $(<span class="string">'&lt;div class="project-mask" style="position: absolute; top : 30px; left: 0; right:0;bottom:0; z-index: 200px; display: none;"&gt;&lt;/div&gt;'</span>).appendTo(moveEl);</div><div class="line">            el.onmousedown = <span class="function"><span class="keyword">function</span> (<span class="params">ev</span>) </span>&#123;</div><div class="line">                $mask.show();</div><div class="line">                <span class="keyword">var</span> disX = ev.clientX - moveEl.offsetLeft;</div><div class="line">                <span class="keyword">var</span> disY = ev.clientY - moveEl.offsetTop;</div><div class="line">                <span class="built_in">document</span>.body.focus();</div><div class="line">                <span class="comment">// prevent text selection in IE</span></div><div class="line">                <span class="built_in">document</span>.onselectstart = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123; <span class="keyword">return</span> <span class="literal">false</span>; &#125;;</div><div class="line">                <span class="comment">// prevent IE from trying to drag an image</span></div><div class="line">                moveEl.ondragstart = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123; <span class="keyword">return</span> <span class="literal">false</span>; &#125;;</div><div class="line"></div><div class="line">                <span class="built_in">document</span>.onmousemove = <span class="function"><span class="keyword">function</span> (<span class="params">ev</span>) </span>&#123;</div><div class="line">                    <span class="keyword">var</span> l = ev.clientX - disX;</div><div class="line">                    <span class="keyword">var</span> t = ev.clientY - disY;</div><div class="line">                    moveEl.style.left = l + <span class="string">'px'</span>;</div><div class="line">                    moveEl.style.top = t + <span class="string">'px'</span>;</div><div class="line">                &#125;;</div><div class="line">                <span class="built_in">document</span>.onmouseup = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">                    $mask.hide();</div><div class="line">                    <span class="built_in">document</span>.onmousemove = <span class="literal">null</span>;</div><div class="line">                    <span class="built_in">document</span>.onselectstart = <span class="literal">null</span>;</div><div class="line">                    moveEl.ondragstart = <span class="literal">null</span>;</div><div class="line">                    <span class="built_in">document</span>.onmouseup = <span class="literal">null</span>;</div><div class="line">                &#125;;</div><div class="line">            &#125;;</div><div class="line"></div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
 <h2 id="vuex"><a href="#vuex" class="headerlink" title="vuex"></a>vuex</h2><blockquote>
-<p>vuex于eventBus的区别<br>vuex = gutters + actions + mutations<br>状态管理器，vuex = 全局事件中心 + 全局变量<br>eventBus = 全局事件中心<br>所以vuex更加强大, </p>
+<p>vuex于eventBus的区别</p>
 </blockquote>
-<p>只是简单的父子组件通信，使用$emit，$on<br>稍微复杂的跨组件通信使用eventBus<br>非常复杂的跨组件通信，以及状态切换使用vuex</p>
+<p>vuex = getters + actions + mutations<br>状态管理器，vuex = 全局事件中心 + 全局变量<br>eventBus = 全局事件中心<br>所以vuex更加强大, </p>
 <blockquote>
-<p>心得<br>推荐所有的状态变化都通过mutations来改变。如果1个操作很复杂，或者是公用的，则可提取到action中，action中可以再访问action，或者提交多个commit，以及异步操作。<br>mutations中的方法，应该尽可能的抽象, 满足尽可能多的情况。<br>payload应该使用对象，拥有更好的扩展性。</p>
+<p>组件通信心得</p>
 </blockquote>
+<ul>
+<li>只是简单的父子组件通信，使用$emit，$on</li>
+<li>稍微复杂的跨组件通信使用eventBus</li>
+<li>非常复杂的跨组件通信，以及状态切换使用vuex</li>
+</ul>
+<blockquote>
+<p>vuex心得</p>
+</blockquote>
+<p><strong>在大型复杂的软件架构中，推崇提取组件状态到state成为公共状态</strong>更利于复用，和通信。<br>大型软件架构中<strong>vuex可以拆分成模块，异步注册</strong></p>
+<ul>
+<li>推荐所有的状态变化都通过mutations来改变。如果1个操作很复杂，或者是公用的，则可提取到action中，action中可以再访问action，或者提交多个commit，以及异步操作。</li>
+<li><strong>mutations中的方法，应该尽可能的抽象, 满足尽可能多的情况。</strong></li>
+<li>payload应该使用对象，拥有更好的扩展性。</li>
+</ul>
 ]]></content>
       
         
@@ -346,8 +439,17 @@
 </blockquote>
 <p>这是淘宝沉淀的自适应方案，就是采用动态计算meta标签和rem，来做的。</p>
 <p>原理 ：</p>
-<p>和响应式方案，媒体查询有冲突</p>
-<p>只兼容了安卓</p>
+<ol>
+<li>默认也是使用viewpoint缩放 + rem 实现， 字体是另外一套缩放方案，根据dpr倍数缩放</li>
+<li>只兼容了ios, 安卓的dpr都是1，看起来没什么问题。</li>
+</ol>
+<p>注意:</p>
+<ol>
+<li><p>如果是瀑布流式的页面，使用此方案没有什么问题，字体可以按dpr倍数缩放，小大机型上看到的文字更多。如果是<strong>绝对定位的页面</strong>，那就不能使用dpr方案缩放文字，<strong>只能用rem</strong>，原因是dpr倍数缩放会保证文字的大小在所有机型上一致，但是文字和绝对定位的top，rem 将不能匹配。如果是大段文字，拆分成几个绝对定位元素拼接，那么位置对齐就会有问题。</p>
+</li>
+<li><p>如果是瀑布流式页面，使用此方案没问题，如果是<strong>全屏覆盖的翻页场景</strong>，此方案图片缩放会有问题，高度上的缩放可能会超出1屏幕, <strong>流式页面可以滚动</strong>，所以没问题。</p>
+</li>
+</ol>
 <h2 id="flexbox"><a href="#flexbox" class="headerlink" title="flexbox"></a>flexbox</h2><p>弹性布局对移动端比较友好，功能比inline-block强大，在横向上的布局，建议用flexbox<br>移动端兼容，建议使用autoprefix</p>
 <figure class="highlight css"><table><tr><td class="code"><pre><div class="line"><span class="selector-class">.f-box</span>&#123;</div><div class="line">  <span class="attribute">display</span>: flex;</div><div class="line">  <span class="attribute">flex-wrap</span>: nowrap;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="selector-class">.f-box-cld</span>&#123;</div><div class="line">  <span class="attribute">flex </span>: <span class="number">1</span>;</div><div class="line">  <span class="attribute">width</span>: <span class="number">40%</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 ]]></content>
@@ -411,17 +513,58 @@
     </entry>
     
     <entry>
-      <title><![CDATA[webpack2.x 入门教学]]></title>
+      <title><![CDATA[webpack2 经验教程]]></title>
       <url>http://http://localhost:4000/2017/02/26/webpack2-x-learn/</url>
-      <content type="html"><![CDATA[<h2 id="配置解析"><a href="#配置解析" class="headerlink" title="配置解析"></a>配置解析</h2><h2 id="code-spilit"><a href="#code-spilit" class="headerlink" title="code-spilit"></a>code-spilit</h2><blockquote>
-<p>异步模块加载</p>
+      <content type="html"><![CDATA[<p>webpack2的文档好了很多，常用配置都有，所以熟读官方文档是最好的学习方式。 <a href="https://webpack.js.org/configuration/" target="_blank" rel="external">传送门</a></p>
+<p><img src="http://o99eh3ii0.bkt.clouddn.com/FvBo_6LhVku9AzB0_UPAOpD4fIdc" alt=""></p>
+<p>这里介绍一下官方文档内容分布。</p>
+<ul>
+<li>CONCEPTS : 一些常用概念的介绍</li>
+<li><strong>GUIDES</strong> : 打包能力介绍，以及涉及的配置</li>
+<li>DOCUMENTATION : 从不同维度详细介绍如何配置webpack</li>
+</ul>
+<p>所以看文档的顺序是，先确定你要做什么，它是属于什么概念范围的配置，然后去GUIDES中寻找，然后去DOCUMENTATION中寻找详细的配置<br><strong>GUIDES 是webpack的配置能力精华，是总纲。应该要最熟悉</strong></p>
+<h2 id="配置解析"><a href="#配置解析" class="headerlink" title="配置解析"></a>配置解析</h2><h2 id="code-spilit"><a href="#code-spilit" class="headerlink" title="code-spilit"></a>code-spilit</h2><blockquote>
+<p><a href="https://webpack.js.org/api/module-methods/#import-" target="_blank" rel="external">异步模块加载</a></p>
 </blockquote>
-<p>import</p>
+<p>在webpack2中，可以使用es6的import实现异步加载模块，它可以返回promise</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="keyword">import</span>(</div><div class="line">  <span class="comment">/* webpackChunkName: "my-chunk-name" */</span></div><div class="line">  <span class="comment">/* webpackMode: "lazy" */</span></div><div class="line">  <span class="string">'module'</span></div><div class="line">).then(<span class="function">(<span class="params"><span class="built_in">module</span></span>)=&gt;</span>&#123;</div><div class="line">    <span class="keyword">let</span> a = <span class="keyword">new</span> <span class="built_in">module</span>;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>import支持魔法注释，通过注释，可以配置如何加载模块。</p>
+<ul>
+<li>webpackChunkName : 指定要打包进的chunk名</li>
+<li>webpackMode : 打包的模式</li>
+</ul>
+<p>webpackMode </p>
+<ul>
+<li>lazy  // default , 会为<strong>每个异步模块</strong>，单独打包。如果指定了相同的chunkName,会在后面带上数字区分</li>
+<li><strong>lazy-one</strong> // 只打包1次，所有的模块会被打包进相同的chunk, 引入时只会请求一次</li>
+<li>eager  // 不生成额外的chunk，会被合并到当前所在chunk</li>
+<li>weak // 会重复加载，已经加载过的模块</li>
+</ul>
+<p>注意:</p>
+<ul>
+<li>import是支持动态加载路径模块的，<code>import(foo)</code>,但如果路径是完全的变量是不支持的，因为webpack不知道这个文件在哪儿。import(<code>./locale/${language}.json</code>),<strong>webpack是可以运行时确认要加载的模块</strong>，在打包时会把这个路径下的所有模块都打包。</li>
+</ul>
 <blockquote>
 <p>commonChunks</p>
+</blockquote>
+<p>这个插件可以提取多个入口的公共模块代码，如果有hash的话，要注意再运行一次提取出公共 模块加载代码，否则每次内容改变，hash改变，重复代码又会提取一次。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="comment">// split vendor js into its own file</span></div><div class="line">    <span class="keyword">new</span> webpack.optimize.CommonsChunkPlugin(&#123;</div><div class="line">      <span class="attr">name</span>: <span class="string">'vendor'</span>,</div><div class="line">      <span class="attr">minChunks</span>: <span class="function"><span class="keyword">function</span> (<span class="params">module, count</span>) </span>&#123;</div><div class="line">        <span class="comment">// any required modules inside node_modules are extracted to vendor</span></div><div class="line">        <span class="keyword">return</span> (</div><div class="line">          <span class="built_in">module</span>.resource &amp;&amp;</div><div class="line">          <span class="regexp">/\.js$/</span>.test(<span class="built_in">module</span>.resource) &amp;&amp;</div><div class="line">          (<span class="built_in">module</span>.resource.indexOf( path.join(__dirname, <span class="string">'../node_modules'</span>)) === <span class="number">0</span> ||</div><div class="line">           <span class="built_in">module</span>.resource.indexOf( path.join(__dirname, <span class="string">'../src/common/vendor'</span>)) === <span class="number">0</span>)</div><div class="line">        )</div><div class="line">      &#125;</div><div class="line">    &#125;),</div><div class="line">    <span class="comment">// extract webpack runtime and module manifest to its own file in order to</span></div><div class="line">    <span class="comment">// prevent vendor hash from being updated whenever app bundle is updated</span></div><div class="line">    <span class="keyword">new</span> webpack.optimize.CommonsChunkPlugin(&#123;</div><div class="line">      <span class="attr">name</span>: <span class="string">'manifest'</span>,</div><div class="line">      <span class="attr">chunks</span>: [<span class="string">'vendor'</span>]</div><div class="line">    &#125;),</div></pre></td></tr></table></figure>
+<blockquote>
 <p>tree shaking</p>
 </blockquote>
-<h2 id="三方模块打包"><a href="#三方模块打包" class="headerlink" title="三方模块打包"></a>三方模块打包</h2><p>exports-loader<br>script-loader<br>extreal</p>
+<h2 id="非npm的三方模块引入"><a href="#非npm的三方模块引入" class="headerlink" title="非npm的三方模块引入"></a>非npm的三方模块引入</h2><blockquote>
+<p>import-loader</p>
+</blockquote>
+<p>如果第三方模块依赖window作为this，则用此模式</p>
+<blockquote>
+<p>exports-loader</p>
+</blockquote>
+<p>如果第三方模块导出的是全局变量，可以用此模式，比如jQuery</p>
+<blockquote>
+<p>script-loader</p>
+</blockquote>
+<p>如果第三方模块比较老旧，可以用这中方式，在全局作用域执行</p>
 ]]></content>
       
         

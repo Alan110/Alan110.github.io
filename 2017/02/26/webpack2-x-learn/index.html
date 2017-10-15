@@ -58,40 +58,42 @@
 
 
 
-<meta name="description" content="配置解析code-spilit
-异步模块加载
+<meta name="description" content="webpack2的文档好了很多，常用配置都有，所以熟读官方文档是最好的学习方式。 传送门
 
-import
+这里介绍一下官方文档内容分布。
 
-commonChunks
-tree shaking
+CONCEPTS : 一些常用概念的介绍
+GUIDES : 打包能力介绍，以及涉及的配置
+DOCUMENTATION : 从不同维度详细介绍如何配置webpack
 
-三方模块打包exports-loaderscript-loaderextreal">
+所以看文档的顺序是，先确定你要做什么，它是属于什么概念范围的配置，然后去GUIDES中寻找，然后去DOCUM">
 <meta property="og:type" content="article">
-<meta property="og:title" content="webpack2.x 入门教学">
+<meta property="og:title" content="webpack2 经验教程">
 <meta property="og:url" content="http://http://localhost:4000/2017/02/26/webpack2-x-learn/index.html">
 <meta property="og:site_name" content="上善若水">
-<meta property="og:description" content="配置解析code-spilit
-异步模块加载
+<meta property="og:description" content="webpack2的文档好了很多，常用配置都有，所以熟读官方文档是最好的学习方式。 传送门
 
-import
+这里介绍一下官方文档内容分布。
 
-commonChunks
-tree shaking
+CONCEPTS : 一些常用概念的介绍
+GUIDES : 打包能力介绍，以及涉及的配置
+DOCUMENTATION : 从不同维度详细介绍如何配置webpack
 
-三方模块打包exports-loaderscript-loaderextreal">
-<meta property="og:updated_time" content="2017-07-15T12:42:59.000Z">
+所以看文档的顺序是，先确定你要做什么，它是属于什么概念范围的配置，然后去GUIDES中寻找，然后去DOCUM">
+<meta property="og:image" content="http://o99eh3ii0.bkt.clouddn.com/FvBo_6LhVku9AzB0_UPAOpD4fIdc">
+<meta property="og:updated_time" content="2017-08-21T02:54:04.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="webpack2.x 入门教学">
-<meta name="twitter:description" content="配置解析code-spilit
-异步模块加载
+<meta name="twitter:title" content="webpack2 经验教程">
+<meta name="twitter:description" content="webpack2的文档好了很多，常用配置都有，所以熟读官方文档是最好的学习方式。 传送门
 
-import
+这里介绍一下官方文档内容分布。
 
-commonChunks
-tree shaking
+CONCEPTS : 一些常用概念的介绍
+GUIDES : 打包能力介绍，以及涉及的配置
+DOCUMENTATION : 从不同维度详细介绍如何配置webpack
 
-三方模块打包exports-loaderscript-loaderextreal">
+所以看文档的顺序是，先确定你要做什么，它是属于什么概念范围的配置，然后去GUIDES中寻找，然后去DOCUM">
+<meta name="twitter:image" content="http://o99eh3ii0.bkt.clouddn.com/FvBo_6LhVku9AzB0_UPAOpD4fIdc">
 
 
 
@@ -115,7 +117,7 @@ tree shaking
   <link rel="canonical" href="http://http://localhost:4000/2017/02/26/webpack2-x-learn/"/>
 
 
-  <title> webpack2.x 入门教学 | 上善若水 </title>
+  <title> webpack2 经验教程 | 上善若水 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -274,7 +276,7 @@ tree shaking
             
             
               
-                webpack2.x 入门教学
+                webpack2 经验教程
               
             
           </h1>
@@ -321,15 +323,56 @@ tree shaking
       
 
       
-        <h2 id="配置解析"><a href="#配置解析" class="headerlink" title="配置解析"></a>配置解析</h2><h2 id="code-spilit"><a href="#code-spilit" class="headerlink" title="code-spilit"></a>code-spilit</h2><blockquote>
-<p>异步模块加载</p>
+        <p>webpack2的文档好了很多，常用配置都有，所以熟读官方文档是最好的学习方式。 <a href="https://webpack.js.org/configuration/" target="_blank" rel="external">传送门</a></p>
+<p><img src="http://o99eh3ii0.bkt.clouddn.com/FvBo_6LhVku9AzB0_UPAOpD4fIdc" alt=""></p>
+<p>这里介绍一下官方文档内容分布。</p>
+<ul>
+<li>CONCEPTS : 一些常用概念的介绍</li>
+<li><strong>GUIDES</strong> : 打包能力介绍，以及涉及的配置</li>
+<li>DOCUMENTATION : 从不同维度详细介绍如何配置webpack</li>
+</ul>
+<p>所以看文档的顺序是，先确定你要做什么，它是属于什么概念范围的配置，然后去GUIDES中寻找，然后去DOCUMENTATION中寻找详细的配置<br><strong>GUIDES 是webpack的配置能力精华，是总纲。应该要最熟悉</strong></p>
+<h2 id="配置解析"><a href="#配置解析" class="headerlink" title="配置解析"></a>配置解析</h2><h2 id="code-spilit"><a href="#code-spilit" class="headerlink" title="code-spilit"></a>code-spilit</h2><blockquote>
+<p><a href="https://webpack.js.org/api/module-methods/#import-" target="_blank" rel="external">异步模块加载</a></p>
 </blockquote>
-<p>import</p>
+<p>在webpack2中，可以使用es6的import实现异步加载模块，它可以返回promise</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="keyword">import</span>(</div><div class="line">  <span class="comment">/* webpackChunkName: "my-chunk-name" */</span></div><div class="line">  <span class="comment">/* webpackMode: "lazy" */</span></div><div class="line">  <span class="string">'module'</span></div><div class="line">).then(<span class="function">(<span class="params"><span class="built_in">module</span></span>)=&gt;</span>&#123;</div><div class="line">    <span class="keyword">let</span> a = <span class="keyword">new</span> <span class="built_in">module</span>;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>import支持魔法注释，通过注释，可以配置如何加载模块。</p>
+<ul>
+<li>webpackChunkName : 指定要打包进的chunk名</li>
+<li>webpackMode : 打包的模式</li>
+</ul>
+<p>webpackMode </p>
+<ul>
+<li>lazy  // default , 会为<strong>每个异步模块</strong>，单独打包。如果指定了相同的chunkName,会在后面带上数字区分</li>
+<li><strong>lazy-one</strong> // 只打包1次，所有的模块会被打包进相同的chunk, 引入时只会请求一次</li>
+<li>eager  // 不生成额外的chunk，会被合并到当前所在chunk</li>
+<li>weak // 会重复加载，已经加载过的模块</li>
+</ul>
+<p>注意:</p>
+<ul>
+<li>import是支持动态加载路径模块的，<code>import(foo)</code>,但如果路径是完全的变量是不支持的，因为webpack不知道这个文件在哪儿。import(<code>./locale/${language}.json</code>),<strong>webpack是可以运行时确认要加载的模块</strong>，在打包时会把这个路径下的所有模块都打包。</li>
+</ul>
 <blockquote>
 <p>commonChunks</p>
+</blockquote>
+<p>这个插件可以提取多个入口的公共模块代码，如果有hash的话，要注意再运行一次提取出公共 模块加载代码，否则每次内容改变，hash改变，重复代码又会提取一次。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="comment">// split vendor js into its own file</span></div><div class="line">    <span class="keyword">new</span> webpack.optimize.CommonsChunkPlugin(&#123;</div><div class="line">      <span class="attr">name</span>: <span class="string">'vendor'</span>,</div><div class="line">      <span class="attr">minChunks</span>: <span class="function"><span class="keyword">function</span> (<span class="params">module, count</span>) </span>&#123;</div><div class="line">        <span class="comment">// any required modules inside node_modules are extracted to vendor</span></div><div class="line">        <span class="keyword">return</span> (</div><div class="line">          <span class="built_in">module</span>.resource &amp;&amp;</div><div class="line">          <span class="regexp">/\.js$/</span>.test(<span class="built_in">module</span>.resource) &amp;&amp;</div><div class="line">          (<span class="built_in">module</span>.resource.indexOf( path.join(__dirname, <span class="string">'../node_modules'</span>)) === <span class="number">0</span> ||</div><div class="line">           <span class="built_in">module</span>.resource.indexOf( path.join(__dirname, <span class="string">'../src/common/vendor'</span>)) === <span class="number">0</span>)</div><div class="line">        )</div><div class="line">      &#125;</div><div class="line">    &#125;),</div><div class="line">    <span class="comment">// extract webpack runtime and module manifest to its own file in order to</span></div><div class="line">    <span class="comment">// prevent vendor hash from being updated whenever app bundle is updated</span></div><div class="line">    <span class="keyword">new</span> webpack.optimize.CommonsChunkPlugin(&#123;</div><div class="line">      <span class="attr">name</span>: <span class="string">'manifest'</span>,</div><div class="line">      <span class="attr">chunks</span>: [<span class="string">'vendor'</span>]</div><div class="line">    &#125;),</div></pre></td></tr></table></figure>
+<blockquote>
 <p>tree shaking</p>
 </blockquote>
-<h2 id="三方模块打包"><a href="#三方模块打包" class="headerlink" title="三方模块打包"></a>三方模块打包</h2><p>exports-loader<br>script-loader<br>extreal</p>
+<h2 id="非npm的三方模块引入"><a href="#非npm的三方模块引入" class="headerlink" title="非npm的三方模块引入"></a>非npm的三方模块引入</h2><blockquote>
+<p>import-loader</p>
+</blockquote>
+<p>如果第三方模块依赖window作为this，则用此模式</p>
+<blockquote>
+<p>exports-loader</p>
+</blockquote>
+<p>如果第三方模块导出的是全局变量，可以用此模式，比如jQuery</p>
+<blockquote>
+<p>script-loader</p>
+</blockquote>
+<p>如果第三方模块比较老旧，可以用这中方式，在全局作用域执行</p>
 
       
     </div>
@@ -413,7 +456,7 @@ tree shaking
   <div class="comments" id="comments">
     
       <div class="ds-thread" data-thread-key="2017/02/26/webpack2-x-learn/"
-           data-title="webpack2.x 入门教学" data-url="http://http://localhost:4000/2017/02/26/webpack2-x-learn/">
+           data-title="webpack2 经验教程" data-url="http://http://localhost:4000/2017/02/26/webpack2-x-learn/">
       </div>
     
   </div>
@@ -440,7 +483,7 @@ tree shaking
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">61</span>
+              <span class="site-state-item-count">64</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>
@@ -479,7 +522,7 @@ tree shaking
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#配置解析"><span class="nav-number">1.</span> <span class="nav-text">配置解析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#code-spilit"><span class="nav-number">2.</span> <span class="nav-text">code-spilit</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三方模块打包"><span class="nav-number">3.</span> <span class="nav-text">三方模块打包</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#配置解析"><span class="nav-number">1.</span> <span class="nav-text">配置解析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#code-spilit"><span class="nav-number">2.</span> <span class="nav-text">code-spilit</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#非npm的三方模块引入"><span class="nav-number">3.</span> <span class="nav-text">非npm的三方模块引入</span></a></li></ol></div>
             
           </div>
         </section>

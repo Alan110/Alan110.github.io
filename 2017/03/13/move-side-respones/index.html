@@ -82,7 +82,7 @@
 逻辑像素(设备独立像素)
 
 逻辑像素是一个相对的">
-<meta property="og:updated_time" content="2017-08-10T09:17:12.000Z">
+<meta property="og:updated_time" content="2017-08-18T23:17:36.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="移动端响应式解决方案">
 <meta name="twitter:description" content="移动端尺寸不一，所以需要一套自适应的方案。需要考虑我们的场景，有些时候，我们只需要宽度按设备尺寸伸缩，纵向上可以是固定的值有时候，我们需要横向，纵向上都能按设备尺寸伸缩，例如铺满屏幕的应用。
@@ -387,8 +387,17 @@
 </blockquote>
 <p>这是淘宝沉淀的自适应方案，就是采用动态计算meta标签和rem，来做的。</p>
 <p>原理 ：</p>
-<p>和响应式方案，媒体查询有冲突</p>
-<p>只兼容了安卓</p>
+<ol>
+<li>默认也是使用viewpoint缩放 + rem 实现， 字体是另外一套缩放方案，根据dpr倍数缩放</li>
+<li>只兼容了ios, 安卓的dpr都是1，看起来没什么问题。</li>
+</ol>
+<p>注意:</p>
+<ol>
+<li><p>如果是瀑布流式的页面，使用此方案没有什么问题，字体可以按dpr倍数缩放，小大机型上看到的文字更多。如果是<strong>绝对定位的页面</strong>，那就不能使用dpr方案缩放文字，<strong>只能用rem</strong>，原因是dpr倍数缩放会保证文字的大小在所有机型上一致，但是文字和绝对定位的top，rem 将不能匹配。如果是大段文字，拆分成几个绝对定位元素拼接，那么位置对齐就会有问题。</p>
+</li>
+<li><p>如果是瀑布流式页面，使用此方案没问题，如果是<strong>全屏覆盖的翻页场景</strong>，此方案图片缩放会有问题，高度上的缩放可能会超出1屏幕, <strong>流式页面可以滚动</strong>，所以没问题。</p>
+</li>
+</ol>
 <h2 id="flexbox"><a href="#flexbox" class="headerlink" title="flexbox"></a>flexbox</h2><p>弹性布局对移动端比较友好，功能比inline-block强大，在横向上的布局，建议用flexbox<br>移动端兼容，建议使用autoprefix</p>
 <figure class="highlight css"><table><tr><td class="code"><pre><div class="line"><span class="selector-class">.f-box</span>&#123;</div><div class="line">  <span class="attribute">display</span>: flex;</div><div class="line">  <span class="attribute">flex-wrap</span>: nowrap;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="selector-class">.f-box-cld</span>&#123;</div><div class="line">  <span class="attribute">flex </span>: <span class="number">1</span>;</div><div class="line">  <span class="attribute">width</span>: <span class="number">40%</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 
@@ -501,7 +510,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">61</span>
+              <span class="site-state-item-count">64</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>
