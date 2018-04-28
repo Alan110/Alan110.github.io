@@ -72,7 +72,7 @@ nodejs官方发布计划
 每隔一年会发布一个LTS长期支持版本，生产环境都建议部署LTS版本。可见今年10.31即将发布8.x的LTS版本，值得期待。这也是写本文的原">
 <meta property="og:image" content="http://o99eh3ii0.bkt.clouddn.com/FhNgHi0m4FOSk2bwg0Y__99lRMKf">
 <meta property="og:image" content="http://o99eh3ii0.bkt.clouddn.com/FoXQxqmpBVQAMeV_VSt6Gd3v2AlS">
-<meta property="og:updated_time" content="2017-10-15T23:45:01.000Z">
+<meta property="og:updated_time" content="2018-04-28T13:30:55.346Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="nodejs生产环境运维">
 <meta name="twitter:description" content="nodejs在生成环境的运维比较复杂，主要是版本多，切换成本较高，奈何node升级很快，node 包版本良莠不齐，稍不注意就使得我们的线上应用挂了。 node更新很快，跟进新的版本有助于程序的迭代，然而过于新也会导致线上的不稳定。
@@ -319,6 +319,7 @@ nodejs官方发布计划
 <p>n是tj大神的项目,它是npm的一个包, 使用顺序是: node &gt; n &gt; node</p>
 <p>它依赖一个已经安装好的node， 公用已经安装好的全局node，通过下载不同版本的node，进行替换。这会导致全局安装的node_module在不同版本的node中是<strong>共享的，虽然不用再次下载，但可能会存在兼容性问题</strong></p>
 <p><code>npm install -g n</code><br><code>n 6.11.3</code><br><code>n ls</code></p>
+<h3 id="删除n"><a href="#删除n" class="headerlink" title="删除n"></a>删除n</h3><p>rm -rf /usr/local/bin/n<br>rm -rf /usr/local/n</p>
 <blockquote>
 <p><a href="https://github.com/creationix/nvm" target="_blank" rel="external">nvm</a> (推荐)</p>
 </blockquote>
@@ -330,6 +331,10 @@ nodejs官方发布计划
 <p><code>nvm ls</code><br>查看所有安装的版本<br><strong>如果在安装之前，已经有全局的node，在这里会看到一个system的版本，你可以再次使用它</strong><br><code>nvm use system</code><br><img src="http://o99eh3ii0.bkt.clouddn.com/FoXQxqmpBVQAMeV_VSt6Gd3v2AlS" alt=""></p>
 <p><code>nvm run 6.11.2 file.js</code><br>使用指定版本运行js文件</p>
 <p><code>nvm install 6 --reinstall-packages-from=5</code><br>每个版本都有自己的全局node_modules,好在它提供了一个参数，我们不用每次都重新手动安装。你可以指定从哪个版本复制包引用</p>
+<p><code>nvm exec 6.11.1 npm run dev</code><br>这个在多项目切换node版本，但并不改变默认node版本比较有用处</p>
+<h3 id="nvmrc"><a href="#nvmrc" class="headerlink" title=".nvmrc"></a>.nvmrc</h3><p>nvm use, nvm install, nvm exec, nvm run, and nvm which, 都会根据当前目录下的文件去寻找node版本，如果命令行中不指定版本的话</p>
+<h3 id="avn"><a href="#avn" class="headerlink" title="avn"></a>avn</h3><p>进入目录自动化切换当前node版本, 支持n，nvm<br>在项目根目录下添加.node_version文件，内容为node版本</p>
+<h4 id="删除avn"><a href="#删除avn" class="headerlink" title="删除avn"></a>删除avn</h4><p>npm uninstall avn avn-nvm and removed ~/.avn and ~/.avnrc  and .zshrc 里面的脚本<br>此时还是会报错 but still get this _avn: command not found<br>开启一个新的shell就好了</p>
 <h2 id="npm包版本管理"><a href="#npm包版本管理" class="headerlink" title="npm包版本管理"></a>npm包版本管理</h2><blockquote>
 <p>npm</p>
 </blockquote>
@@ -504,7 +509,7 @@ nodejs官方发布计划
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#node版本管理"><span class="nav-number">1.</span> <span class="nav-text">node版本管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#npm包版本管理"><span class="nav-number">2.</span> <span class="nav-text">npm包版本管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#线上应用运维-pm2"><span class="nav-number">3.</span> <span class="nav-text">线上应用运维-pm2</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#node版本管理"><span class="nav-number">1.</span> <span class="nav-text">node版本管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#删除n"><span class="nav-number">1.1.</span> <span class="nav-text">删除n</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nvmrc"><span class="nav-number">1.2.</span> <span class="nav-text">.nvmrc</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#avn"><span class="nav-number">1.3.</span> <span class="nav-text">avn</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#删除avn"><span class="nav-number">1.3.1.</span> <span class="nav-text">删除avn</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#npm包版本管理"><span class="nav-number">2.</span> <span class="nav-text">npm包版本管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#线上应用运维-pm2"><span class="nav-number">3.</span> <span class="nav-text">线上应用运维-pm2</span></a></li></ol></div>
             
           </div>
         </section>
@@ -523,7 +528,7 @@ nodejs官方发布计划
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2017</span>
+  <span itemprop="copyrightYear">2018</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

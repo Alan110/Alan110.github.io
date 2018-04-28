@@ -1554,7 +1554,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #4ea406;
+  background: #833ef0;
 }
 .links-of-blogroll {
   font-size: 13px;
@@ -2433,13 +2433,6 @@ hr {
 }
 ::-webkit-scrollbar {
   width: 0px;
-}
-.posts-expand .post-body h2,
-.posts-expand .post-body h3,
-.posts-expand .post-body h4,
-.posts-expand .post-body h5,
-.posts-expand .post-body h6 {
-  margin-left: -20px;
 }
 .footer-inner {
   text-align: center;

@@ -16,6 +16,7 @@
 <p>n是tj大神的项目,它是npm的一个包, 使用顺序是: node &gt; n &gt; node</p>
 <p>它依赖一个已经安装好的node， 公用已经安装好的全局node，通过下载不同版本的node，进行替换。这会导致全局安装的node_module在不同版本的node中是<strong>共享的，虽然不用再次下载，但可能会存在兼容性问题</strong></p>
 <p><code>npm install -g n</code><br><code>n 6.11.3</code><br><code>n ls</code></p>
+<h3 id="删除n"><a href="#删除n" class="headerlink" title="删除n"></a>删除n</h3><p>rm -rf /usr/local/bin/n<br>rm -rf /usr/local/n</p>
 <blockquote>
 <p><a href="https://github.com/creationix/nvm" target="_blank" rel="external">nvm</a> (推荐)</p>
 </blockquote>
@@ -27,6 +28,10 @@
 <p><code>nvm ls</code><br>查看所有安装的版本<br><strong>如果在安装之前，已经有全局的node，在这里会看到一个system的版本，你可以再次使用它</strong><br><code>nvm use system</code><br><img src="http://o99eh3ii0.bkt.clouddn.com/FoXQxqmpBVQAMeV_VSt6Gd3v2AlS" alt=""></p>
 <p><code>nvm run 6.11.2 file.js</code><br>使用指定版本运行js文件</p>
 <p><code>nvm install 6 --reinstall-packages-from=5</code><br>每个版本都有自己的全局node_modules,好在它提供了一个参数，我们不用每次都重新手动安装。你可以指定从哪个版本复制包引用</p>
+<p><code>nvm exec 6.11.1 npm run dev</code><br>这个在多项目切换node版本，但并不改变默认node版本比较有用处</p>
+<h3 id="nvmrc"><a href="#nvmrc" class="headerlink" title=".nvmrc"></a>.nvmrc</h3><p>nvm use, nvm install, nvm exec, nvm run, and nvm which, 都会根据当前目录下的文件去寻找node版本，如果命令行中不指定版本的话</p>
+<h3 id="avn"><a href="#avn" class="headerlink" title="avn"></a>avn</h3><p>进入目录自动化切换当前node版本, 支持n，nvm<br>在项目根目录下添加.node_version文件，内容为node版本</p>
+<h4 id="删除avn"><a href="#删除avn" class="headerlink" title="删除avn"></a>删除avn</h4><p>npm uninstall avn avn-nvm and removed ~/.avn and ~/.avnrc  and .zshrc 里面的脚本<br>此时还是会报错 but still get this _avn: command not found<br>开启一个新的shell就好了</p>
 <h2 id="npm包版本管理"><a href="#npm包版本管理" class="headerlink" title="npm包版本管理"></a>npm包版本管理</h2><blockquote>
 <p>npm</p>
 </blockquote>
@@ -1515,6 +1520,7 @@
 <p>当访问一个域时，这个域下所有的cookie都会被带上在http的请求头里，不管是前端设置的，还是在后端设置的。</p>
 <h2 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h2><figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="built_in">document</span>.cookie = <span class="string">'name=alan;age=11;expires=121321'</span>;</div></pre></td></tr></table></figure>
 <p>cookie 是以；分割的键值对字符串。网上有很多教程，这里不多说。<a href="http://www.jb51.net/article/64330.htm" target="_blank" rel="external">基础教程</a></p>
+<p>Cookie是可以覆盖的，如果重复写入同名的Cookie，那么将会覆盖之前的Cookie。</p>
 <h2 id="同主域跨域"><a href="#同主域跨域" class="headerlink" title="同主域跨域"></a>同主域跨域</h2><p>默认情况下，cookie只在相同服务端路径下的文件可以访问，设置path=’/‘, 几可以在整个站点共享，跨目录。<br>设置domain=”.baidu.com”, 则相同主域下cookie都可以共享。例如a.baidu.com, 和b.baidu.com </p>
 <h2 id="跨主域写"><a href="#跨主域写" class="headerlink" title="跨主域写"></a>跨主域写</h2><p>在SSO单点登录系统中，会有多个主域名，只要登录了其中一个域，那么访问别的域就不需要登录了。实现这个的关键就是跨域的cookie共享。</p>
 <p><img src="http://o99eh3ii0.bkt.clouddn.com//public/16-11-26/97630655.jpg" alt="Alt Text"> </p>
@@ -1524,7 +1530,7 @@
 <h2 id="跨主域读"><a href="#跨主域读" class="headerlink" title="跨主域读"></a>跨主域读</h2><p><img src="http://o99eh3ii0.bkt.clouddn.com//public/16-11-26/29022526.jpg" alt="Alt Text"> </p>
 <p>有时候我们需要读取别的域下的cookie，也可以利用script的跨域能力。<br>在访问a域时，向b域发起跨域请求，b域服务端获取到所有的cookie并以jsonp的形式返回。前端就能拿到cookie信息了。</p>
 <blockquote>
-<p><strong>跨域读，跨域写都是利用jsonp，或者image的跨域访问的能力，将当前域的信息带到别的域处理，需要后端配合</strong></p>
+<p><strong>跨域读，跨域写都是利用jsonp，或者image的跨域访问的能力，将当前域的信息带到别的域处理，需要后端配合。还有一个坑是如果服务端cookie设置了httpOnly,这么客户端的js 无法通过document.cookie获取到该cookie。我们的这个方法也就失效了</strong></p>
 </blockquote>
 <h2 id="cors"><a href="#cors" class="headerlink" title="cors"></a>cors</h2><p>这里不得不提一下cors的几个属性, 当指定携带用户凭证的时候，域名不能使用通配符，必须指定详细的域名。<br>且，<code>cookie仍然遵循同源策略，所以只有当前服务器的域名设置的cookie才能携带</code>，不能携带客户端cookie，所以<code>cors不能实现跨域cookie共享</code></p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">Access-Control-Allow-Credentials : true  // 携带用户凭证，cookie</div><div class="line">Access-Control-Allow-Origin : http://www.baidu.com  // 指定可跨域的域名</div></pre></td></tr></table></figure>
